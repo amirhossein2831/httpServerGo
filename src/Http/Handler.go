@@ -27,3 +27,12 @@ func FormHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("the address is %v \n", r.FormValue("address"))
 
 }
+
+func MoviesHandler(writer http.ResponseWriter, r *http.Request) {
+	println("movies")
+}
+
+func MovieHandler(writer http.ResponseWriter, request *http.Request) {
+	//person := Model.CreateUser(1, "ali", "sdf", 20, "sdf", time.Time{})
+	println("movie")
+}

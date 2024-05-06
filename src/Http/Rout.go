@@ -21,4 +21,3 @@ func Routing() *mux.Router {
 
 	return r
 }
-

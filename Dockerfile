@@ -2,7 +2,6 @@ FROM golang:1.22
 
 WORKDIR /app
 
-# TODO: add go.sum to it later
 COPY go.mod .
 
 RUN go mod download
