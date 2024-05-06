@@ -2,11 +2,11 @@ FROM golang:1.22
 
 WORKDIR /app
 
-COPY go.mod .
+COPY go.mod go.sum ./
 
 RUN go mod download
 
-COPY . .
+COPY . ./
 
 CMD go run ./src/main.go
 
