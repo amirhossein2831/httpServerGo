@@ -9,9 +9,10 @@ RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o /app_exe ./src/
+CMD go run ./src/main.go
 
 EXPOSE 8080
 
-CMD ["/app_exe"]
-
+# compile and run
+#RUN CGO_ENABLED=0 GOOS=linux go build -o /app_exe ./src/
+#CMD ["/app_exe"]
