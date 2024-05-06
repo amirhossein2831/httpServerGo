@@ -1,6 +1,10 @@
 package Http
 
-import "net/http"
+import (
+	"fmt"
+	"log"
+	"net/http"
+)
 
 func HelloHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
@@ -8,7 +12,6 @@ func HelloHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	println("hello url")
-
 }
 
 func FormHandler(w http.ResponseWriter, r *http.Request) {
@@ -16,5 +19,11 @@ func FormHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "method is not supported", http.StatusBadRequest)
 		return
 	}
-	println("From url")
+	if err := r.ParseForm(); err != nil {
+		log.Printf("there is a error while parsing the form %v", err)
+		return
+	}
+	fmt.Printf("the name is %v \n", r.FormValue("name"))
+	fmt.Printf("the address is %v \n", r.FormValue("address"))
+
 }
