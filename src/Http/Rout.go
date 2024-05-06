@@ -1,9 +1,23 @@
 package Http
 
-import "net/http"
+import (
+	"github.com/gorilla/mux"
+	"net/http"
+)
 
-func Routing() {
+func Routing() *mux.Router {
+	r := mux.NewRouter()
+
+	// static file
 	http.Handle("/", http.FileServer(http.Dir("static/html")))
-	http.HandleFunc("/home", HelloHandler)
-	http.HandleFunc("/form", FormHandler)
+
+	// home
+	r.HandleFunc("/home", HelloHandler)
+	r.HandleFunc("/form", FormHandler)
+
+	// movie
+	r.HandleFunc("/movies", FormHandler)
+	r.HandleFunc("/movies/{id}", FormHandler)
+
+	return r
 }
