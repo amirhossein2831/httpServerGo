@@ -16,8 +16,9 @@ func Routing() *mux.Router {
 	r.HandleFunc("/form", FormHandler)
 
 	// movie
-	r.HandleFunc("/movies", FormHandler)
-	r.HandleFunc("/movies/{id}", FormHandler)
+	r.HandleFunc("/movies", MoviesHandler)
+	r.HandleFunc("/movies/{id}", MovieHandler)
 
 	return r
 }
+
