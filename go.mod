@@ -1,3 +1,3 @@
-module httpServer
+module httpServerGo
 
 go 1.18

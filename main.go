@@ -1,7 +1,7 @@
 package main
 
 import (
-	"httpServer/Http"
+	"httpServerGo/Http"
 	"log"
 	"net/http"
 )
