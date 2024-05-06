@@ -2,6 +2,7 @@ package Http
 
 import (
 	"fmt"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 )
@@ -32,7 +33,6 @@ func MoviesHandler(writer http.ResponseWriter, r *http.Request) {
 	println("movies")
 }
 
-func MovieHandler(writer http.ResponseWriter, request *http.Request) {
-	//person := Model.CreateUser(1, "ali", "sdf", 20, "sdf", time.Time{})
-	println("movie")
+func MovieHandler(w http.ResponseWriter, r *http.Request) {
+	println("movie sdf with id: ", mux.Vars(r)["id"])
 }
