@@ -1,8 +1,12 @@
 package Model
 
 import (
+	"errors"
+	"strconv"
 	"time"
 )
+
+var users []User
 
 type Profile struct {
 	Age       int       `json:"age"`
@@ -18,10 +22,19 @@ type User struct {
 	Profile   *Profile `json:"profile"`
 }
 
-func CreateUser(id int, firstName string, lastName string, email string, profile *Profile) *User {
+func initUser(id int, firstName string, lastName string, email string, profile *Profile) *User {
 	return &User{ID: id, FirstName: firstName, LastName: lastName, Email: email, Profile: profile}
 }
 
-func createProfile(age int, address string, birthDate time.Time) *Profile {
+func initProfile(age int, address string, birthDate time.Time) *Profile {
 	return &Profile{Age: age, Address: address, BirthData: birthDate}
+}
+
+func SeedUser() {
+	for i := 0; i < 10; i++ {
+		profile := initProfile(29, "iran", time.Time{})
+		user := initUser(i+1, "amir", "motaghian", "amirmemool12@gmail.com", profile)
+
+		users = append(users, *user)
+	}
 }
