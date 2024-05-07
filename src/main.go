@@ -3,11 +3,18 @@ package main
 import (
 	"github.com/amirhossein2831/httpServerGo/src/Http"
 	"github.com/amirhossein2831/httpServerGo/src/Model"
+	"github.com/joho/godotenv"
 	"log"
 	"net/http"
 )
 
 func main() {
+	// load env variable
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// seed data
 	Model.SeedUser()
 
