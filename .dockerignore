@@ -7,3 +7,6 @@ vendor/
 
 # Exclude git history and configuration.
 .gitignore
+
+# environment variable
+.env
