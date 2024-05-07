@@ -16,12 +16,11 @@ func Routing() *mux.Router {
 	r.HandleFunc("/form", formHandler).Methods("GET")
 
 	// movie
-	r.HandleFunc("/movies", allUser).Methods("GET")
-	r.HandleFunc("/movies/{id}", getUser).Methods("GET")
-	r.HandleFunc("/movies/", createUser).Methods("POST")
-	r.HandleFunc("/movies/{id}", updateUser).Methods("PUT")
-	r.HandleFunc("/movies/{id}", partialUpdateUser).Methods("PATCH")
-	r.HandleFunc("/movies/{id}", deleteUser).Methods("DELETE")
+	r.HandleFunc("/users/", getUsers).Methods("GET")
+	r.HandleFunc("/users/{id}", getUser).Methods("GET")
+	r.HandleFunc("/users/", createUser).Methods("POST")
+	r.HandleFunc("/users/{id}", updateUser).Methods("PUT")
+	r.HandleFunc("/users/{id}", deleteUser).Methods("DELETE")
 
 	return r
 }
