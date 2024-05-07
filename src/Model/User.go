@@ -61,3 +61,16 @@ func CreateUser(user User) {
 	user.ID = len(users) + 1
 	users = append(users, user)
 }
+
+func UpdateUser(user User, body User) {
+	user.FirstName = body.FirstName
+	user.LastName = body.LastName
+	user.Email = body.Email
+	user.Profile = body.Profile
+
+	for i := 0; i < len(users); i++ {
+		if users[i].ID == user.ID {
+			users[i] = user
+		}
+	}
+}

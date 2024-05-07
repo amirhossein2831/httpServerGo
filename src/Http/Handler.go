@@ -56,3 +56,22 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 	Model.CreateUser(user)
 	JsonResponse(w, http.StatusOK, user)
 }
+
+func updateUser(w http.ResponseWriter, r *http.Request) {
+	var body Model.User
+	vars := mux.Vars(r)
+	user, err := Model.GetUser(vars["id"])
+	if err != nil {
+		JsonError(w, err)
+		return
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&body)
+	if err != nil {
+		JsonError(w, err)
+		return
+	}
+
+	Model.UpdateUser(user, body)
+	JsonResponse(w, http.StatusOK, user)
+}
