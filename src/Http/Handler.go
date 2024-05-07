@@ -2,12 +2,14 @@ package Http
 
 import (
 	"fmt"
-	"github.com/gorilla/mux"
+	"github.com/amirhossein2831/httpServerGo/src/Model"
 	"log"
 	"net/http"
 )
 
-func HelloHandler(w http.ResponseWriter, r *http.Request) {
+var users []Model.User
+
+func helloHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		http.Error(w, "method is not supported", http.StatusBadRequest)
 		return
@@ -15,7 +17,7 @@ func HelloHandler(w http.ResponseWriter, r *http.Request) {
 	println("hello url")
 }
 
-func FormHandler(w http.ResponseWriter, r *http.Request) {
+func formHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		http.Error(w, "method is not supported", http.StatusBadRequest)
 		return
@@ -29,10 +31,26 @@ func FormHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func MoviesHandler(writer http.ResponseWriter, r *http.Request) {
-	println("movies")
+func allUser(writer http.ResponseWriter, r *http.Request) {
+
 }
 
-func MovieHandler(w http.ResponseWriter, r *http.Request) {
-	println("movie sdf with id: ", mux.Vars(r)["id"])
+func getUser(writer http.ResponseWriter, r *http.Request) {
+
+}
+
+func createUser(writer http.ResponseWriter, r *http.Request) {
+
+}
+
+func updateUser(writer http.ResponseWriter, r *http.Request) {
+
+}
+
+func partialUpdateUser(writer http.ResponseWriter, r *http.Request) {
+
+}
+
+func deleteUser(writer http.ResponseWriter, r *http.Request) {
+
 }
