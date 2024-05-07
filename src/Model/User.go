@@ -1,6 +1,8 @@
 package Model
 
 import (
+	"errors"
+	"strconv"
 	"time"
 )
 
@@ -41,3 +43,16 @@ func GetUsers() []User {
 	return users
 }
 
+func GetUser(pk string) (User, error) {
+	id, err := strconv.Atoi(pk)
+	if err != nil {
+		return User{}, errors.New("invalid id")
+	}
+	for i := 0; i < len(users); i++ {
+		if users[i].ID == id {
+			return users[i], nil
+		}
+
+	}
+	return User{}, errors.New("cannot find user")
+}

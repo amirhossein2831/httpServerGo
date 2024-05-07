@@ -3,6 +3,7 @@ package Http
 import (
 	"fmt"
 	"github.com/amirhossein2831/httpServerGo/src/Model"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 )
@@ -32,4 +33,14 @@ func formHandler(w http.ResponseWriter, r *http.Request) {
 func getUsers(w http.ResponseWriter, r *http.Request) {
 	users := Model.GetUsers()
 	JsonResponse(w, http.StatusOK, users)
+}
+
+func getUser(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	user, err := Model.GetUser(vars["id"])
+	if err != nil {
+		JsonError(w, err)
+		return
+	}
+	JsonResponse(w, http.StatusOK, user)
 }
