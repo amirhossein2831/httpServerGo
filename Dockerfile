@@ -2,12 +2,11 @@ FROM golang:1.22
 
 WORKDIR /app
 
-# TODO: add go.sum to it later
-COPY go.mod .
+COPY go.mod go.sum ./
 
 RUN go mod download
 
-COPY . .
+COPY . ./
 
 CMD go run ./src/main.go
 
