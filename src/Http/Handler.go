@@ -7,8 +7,6 @@ import (
 	"net/http"
 )
 
-var users []Model.User
-
 func helloHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		http.Error(w, "method is not supported", http.StatusBadRequest)
@@ -31,26 +29,7 @@ func formHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func allUser(writer http.ResponseWriter, r *http.Request) {
-
-}
-
-func getUser(writer http.ResponseWriter, r *http.Request) {
-
-}
-
-func createUser(writer http.ResponseWriter, r *http.Request) {
-
-}
-
-func updateUser(writer http.ResponseWriter, r *http.Request) {
-
-}
-
-func partialUpdateUser(writer http.ResponseWriter, r *http.Request) {
-
-}
-
-func deleteUser(writer http.ResponseWriter, r *http.Request) {
-
+func getUsers(w http.ResponseWriter, r *http.Request) {
+	users := Model.GetUsers()
+	JsonResponse(w, http.StatusOK, users)
 }

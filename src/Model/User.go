@@ -1,8 +1,6 @@
 package Model
 
 import (
-	"errors"
-	"strconv"
 	"time"
 )
 
@@ -38,3 +36,8 @@ func SeedUser() {
 		users = append(users, *user)
 	}
 }
+
+func GetUsers() []User {
+	return users
+}
+
