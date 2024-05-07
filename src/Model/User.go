@@ -74,3 +74,17 @@ func UpdateUser(user User, body User) {
 		}
 	}
 }
+
+func RemoveUser(pk string) error {
+	id, err := strconv.Atoi(pk)
+	if err != nil {
+		return errors.New("invalid id")
+	}
+	for i := 0; i < len(users); i++ {
+		if users[i].ID == id {
+			users = append(users[:i], users[i+1:]...)
+			return nil
+		}
+	}
+	return errors.New("cannot find user")
+}

@@ -75,3 +75,14 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 	Model.UpdateUser(user, body)
 	JsonResponse(w, http.StatusOK, user)
 }
+
+func deleteUser(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	err := Model.RemoveUser(vars["id"])
+	if err != nil {
+		JsonError(w, err)
+		return
+	}
+	JsonResponse(w, http.StatusOK, struct{}{})
+}
