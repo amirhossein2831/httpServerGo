@@ -56,3 +56,8 @@ func GetUser(pk string) (User, error) {
 	}
 	return User{}, errors.New("cannot find user")
 }
+
+func CreateUser(user User) {
+	user.ID = len(users) + 1
+	users = append(users, user)
+}

@@ -1,6 +1,7 @@
 package Http
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/amirhossein2831/httpServerGo/src/Model"
 	"github.com/gorilla/mux"
@@ -42,5 +43,16 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 		JsonError(w, err)
 		return
 	}
+	JsonResponse(w, http.StatusOK, user)
+}
+
+func createUser(w http.ResponseWriter, r *http.Request) {
+	var user Model.User
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		JsonError(w, err)
+		return
+	}
+	Model.CreateUser(user)
 	JsonResponse(w, http.StatusOK, user)
 }
