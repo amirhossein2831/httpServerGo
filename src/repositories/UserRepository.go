@@ -47,3 +47,17 @@ func CreateUser(r *http.Request) (model.User, error, *gorm.DB) {
 
 	return user, nil, res
 }
+
+func DeleteUser(pk string) error {
+	id, err := strconv.Atoi(pk)
+	if err != nil {
+		return err
+	}
+	res := config.App.GetDB().Delete(&model.User{}, id)
+
+	if res.Error != nil {
+		return res.Error
+	}
+
+	return nil
+}
