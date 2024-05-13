@@ -1,10 +1,12 @@
 package repositories
 
 import (
+	"encoding/json"
 	"errors"
 	"github.com/amirhossein2831/httpServerGo/src/config"
 	"github.com/amirhossein2831/httpServerGo/src/model"
 	"gorm.io/gorm"
+	"net/http"
 	"strconv"
 )
 
@@ -26,8 +28,22 @@ func GetUser(pk string) (model.User, error, *gorm.DB) {
 	}
 
 	res := config.App.GetDB().First(&user, id)
-	if res.Error != nil || res.RowsAffected == 0 {
-		return user, errors.New("the id is not valid"), nil
+	if res.Error != nil {
+		return user, res.Error, nil
 	}
+	return user, nil, res
+}
+
+func CreateUser(r *http.Request) (model.User, error, *gorm.DB) {
+	var user model.User
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		return user, err, nil
+	}
+	res := config.App.GetDB().Create(&user)
+	if res.Error != nil {
+		return user, res.Error, nil
+	}
+
 	return user, nil, res
 }
