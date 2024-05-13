@@ -17,22 +17,21 @@ func main() {
 	}
 
 	// connect to DB
-	DB, err := config.ConnectDB()
+	config.App.DB, err = config.ConnectDB()
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// instantiate router
+	config.App.R = routes.Routing()
+
 	// seed data
 	model.SeedUser()
-
-	// instantiate router
-	router := routes.Routing()
 
 	// run server
 	println("Connected to DB successfully")
 	println("server started at port 8080")
-	if err := http.ListenAndServe(":8080", router); err != nil {
+	if err := http.ListenAndServe(":8080", config.App.R); err != nil {
 		log.Fatal(err)
 	}
-	print(DB.Error)
 }
