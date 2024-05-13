@@ -1,4 +1,4 @@
-package Http
+package Routes
 
 import (
 	"github.com/gorilla/mux"
@@ -10,17 +10,10 @@ func Routing() *mux.Router {
 
 	// static file
 	r.Handle("/", http.FileServer(http.Dir("static/html")))
-
 	// home
-	r.HandleFunc("/home", helloHandler).Methods("GET")
-	r.HandleFunc("/form", formHandler).Methods("GET")
-
-	// movie
-	r.HandleFunc("/users/", getUsers).Methods("GET")
-	r.HandleFunc("/users/{id}", getUser).Methods("GET")
-	r.HandleFunc("/users/", createUser).Methods("POST")
-	r.HandleFunc("/users/{id}", updateUser).Methods("PUT")
-	r.HandleFunc("/users/{id}", deleteUser).Methods("DELETE")
+	homeRoute(r)
+	// user
+	userRoute(r)
 
 	return r
 }
