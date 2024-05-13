@@ -1,14 +1,14 @@
 package routes
 
 import (
-	"github.com/amirhossein2831/httpServerGo/src/http"
+	"github.com/amirhossein2831/httpServerGo/src/controller"
 	"github.com/gorilla/mux"
 )
 
 func userRoute(r *mux.Router) {
-	r.HandleFunc("/users/", http.GetUsers).Methods("GET")
-	r.HandleFunc("/users/", http.CreateUser).Methods("POST")
-	r.HandleFunc("/users/{id}", http.GetUser).Methods("GET")
-	r.HandleFunc("/users/{id}", http.UpdateUser).Methods("PUT")
-	r.HandleFunc("/users/{id}", http.DeleteUser).Methods("DELETE")
+	r.HandleFunc("/users/", controller.GetUsers).Methods("GET")
+	r.HandleFunc("/users/", controller.CreateUser).Methods("POST")
+	r.HandleFunc("/users/{id}", controller.GetUser).Methods("GET")
+	r.HandleFunc("/users/{id}", controller.UpdateUser).Methods("PUT")
+	r.HandleFunc("/users/{id}", controller.DeleteUser).Methods("DELETE")
 }
