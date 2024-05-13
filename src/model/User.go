@@ -17,7 +17,7 @@ type User struct {
 	gorm.Model
 	FirstName string   `json:"first-name"`
 	LastName  string   `json:"last-name"`
-	Email     string   `json:"email"`
+	Email     string   `gorm:"unique;not null" json:"email"`
 	Profile   *Profile `gorm:"foreignKey:UserID" json:"profile"`
 }
 
