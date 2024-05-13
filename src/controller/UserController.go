@@ -35,3 +35,12 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	http2.JsonResponse(w, http.StatusCreated, user)
 }
+
+func DeleteUser(w http.ResponseWriter, r *http.Request) {
+	err := repositories.DeleteUser(mux.Vars(r)["id"])
+	if err != nil {
+		http2.JsonError(w, err)
+		return
+	}
+	http2.JsonResponse(w, http.StatusOK, struct{}{})
+}
