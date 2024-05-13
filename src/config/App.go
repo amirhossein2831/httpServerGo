@@ -5,9 +5,22 @@ import (
 	"gorm.io/gorm"
 )
 
+var App = &APP{}
+
 type APP struct {
-	DB *gorm.DB
-	R  *mux.Router
+	db *gorm.DB
+	r  *mux.Router
 }
 
-var App = &APP{}
+func (a *APP) Init(db *gorm.DB, r *mux.Router) {
+	a.db = db
+	a.r = r
+}
+
+func (a *APP) GetDB() *gorm.DB {
+	return a.db
+}
+
+func (a *APP) GetRouter() *mux.Router {
+	return a.r
+}
