@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-func helloHandler(w http.ResponseWriter, r *http.Request) {
+func HelloHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		http.Error(w, "method is not supported", http.StatusBadRequest)
 		return
@@ -17,7 +17,7 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	println("hello url")
 }
 
-func formHandler(w http.ResponseWriter, r *http.Request) {
+func FormHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		http.Error(w, "method is not supported", http.StatusBadRequest)
 		return
@@ -31,12 +31,12 @@ func formHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func getUsers(w http.ResponseWriter, r *http.Request) {
+func GetUsers(w http.ResponseWriter, r *http.Request) {
 	users := Model.GetUsers()
 	JsonResponse(w, http.StatusOK, users)
 }
 
-func getUser(w http.ResponseWriter, r *http.Request) {
+func GetUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	user, err := Model.GetUser(vars["id"])
 	if err != nil {
@@ -46,7 +46,7 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 	JsonResponse(w, http.StatusOK, user)
 }
 
-func createUser(w http.ResponseWriter, r *http.Request) {
+func CreateUser(w http.ResponseWriter, r *http.Request) {
 	var user Model.User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
@@ -57,7 +57,7 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 	JsonResponse(w, http.StatusOK, user)
 }
 
-func updateUser(w http.ResponseWriter, r *http.Request) {
+func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	var body Model.User
 	vars := mux.Vars(r)
 	user, err := Model.GetUser(vars["id"])
@@ -76,7 +76,7 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 	JsonResponse(w, http.StatusOK, user)
 }
 
-func deleteUser(w http.ResponseWriter, r *http.Request) {
+func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
 	err := Model.RemoveUser(vars["id"])
