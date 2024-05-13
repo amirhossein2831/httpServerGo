@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/amirhossein2831/httpServerGo/src/Model"
-	"github.com/amirhossein2831/httpServerGo/src/Routes"
 	"github.com/amirhossein2831/httpServerGo/src/config"
+	"github.com/amirhossein2831/httpServerGo/src/model"
+	"github.com/amirhossein2831/httpServerGo/src/routes"
 	"github.com/joho/godotenv"
 	"log"
 	"net/http"
@@ -23,10 +23,10 @@ func main() {
 	}
 
 	// seed data
-	Model.SeedUser()
+	model.SeedUser()
 
 	// instantiate router
-	router := Routes.Routing()
+	router := routes.Routing()
 
 	// run server
 	println("Connected to DB successfully")

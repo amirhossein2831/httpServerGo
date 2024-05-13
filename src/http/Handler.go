@@ -1,9 +1,9 @@
-package Http
+package http
 
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/amirhossein2831/httpServerGo/src/Model"
+	"github.com/amirhossein2831/httpServerGo/src/model"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -32,13 +32,13 @@ func FormHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
-	users := Model.GetUsers()
+	users := model.GetUsers()
 	JsonResponse(w, http.StatusOK, users)
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	user, err := Model.GetUser(vars["id"])
+	user, err := model.GetUser(vars["id"])
 	if err != nil {
 		JsonError(w, err)
 		return
@@ -47,20 +47,20 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
-	var user Model.User
+	var user model.User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		JsonError(w, err)
 		return
 	}
-	Model.CreateUser(user)
+	model.CreateUser(user)
 	JsonResponse(w, http.StatusOK, user)
 }
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
-	var body Model.User
+	var body model.User
 	vars := mux.Vars(r)
-	user, err := Model.GetUser(vars["id"])
+	user, err := model.GetUser(vars["id"])
 	if err != nil {
 		JsonError(w, err)
 		return
@@ -72,14 +72,14 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	Model.UpdateUser(user, body)
+	model.UpdateUser(user, body)
 	JsonResponse(w, http.StatusOK, user)
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-	err := Model.RemoveUser(vars["id"])
+	err := model.RemoveUser(vars["id"])
 	if err != nil {
 		JsonError(w, err)
 		return
