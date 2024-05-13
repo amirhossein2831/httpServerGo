@@ -10,7 +10,8 @@ import (
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	users, err, _ := repositories.GetUsers()
 	if err != nil {
-		http2.JsonResponse(w, http.StatusBadRequest, err)
+		http2.JsonError(w, err)
+		return
 	}
 
 	http2.JsonResponse(w, http.StatusOK, users)
@@ -19,8 +20,18 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 func GetUser(w http.ResponseWriter, r *http.Request) {
 	user, err, _ := repositories.GetUser(mux.Vars(r)["id"])
 	if err != nil {
-		http2.JsonResponse(w, http.StatusBadRequest, err)
+		http2.JsonError(w, err)
+		return
 	}
 
 	http2.JsonResponse(w, http.StatusOK, user)
+}
+
+func CreateUser(w http.ResponseWriter, r *http.Request) {
+	user, err, _ := repositories.CreateUser(r)
+	if err != nil {
+		http2.JsonError(w, err)
+		return
+	}
+	http2.JsonResponse(w, http.StatusCreated, user)
 }
