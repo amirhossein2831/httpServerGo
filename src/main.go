@@ -21,13 +21,19 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	println("Connected to DB successfully")
 
+	// migrate Tables
+	err = model.Migrate(db)
+	if err != nil {
+		return
+	}
+	println("Table Migrate successfully")
+
+	// Init App
 	config.App.Init(db, routes.Routing())
-	// seed data
-	model.SeedUser()
 
 	// run server
-	println("Connected to DB successfully")
 	println("server started at port 8080")
 	if err := http.ListenAndServe(":8080", config.App.GetRouter()); err != nil {
 		log.Fatal(err)
