@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/amirhossein2831/httpServerGo/src/Http"
 	"github.com/amirhossein2831/httpServerGo/src/Model"
+	"github.com/amirhossein2831/httpServerGo/src/Routes"
 	"github.com/joho/godotenv"
 	"log"
 	"net/http"
@@ -19,7 +19,7 @@ func main() {
 	Model.SeedUser()
 
 	// instantiate router
-	router := Http.Routing()
+	router := Routes.Routing()
 
 	// run server
 	println("server started at port 8080")
