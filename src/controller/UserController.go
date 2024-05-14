@@ -7,7 +7,11 @@ import (
 	"net/http"
 )
 
-func GetUsers(w http.ResponseWriter, r *http.Request) {
+type UserController struct {
+	Crud
+}
+
+func (c *UserController) Index(w http.ResponseWriter, r *http.Request) {
 	users, err, _ := repositories.GetUsers()
 	if err != nil {
 		http2.JsonError(w, err)
@@ -17,7 +21,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	http2.JsonResponse(w, http.StatusOK, users)
 }
 
-func GetUser(w http.ResponseWriter, r *http.Request) {
+func (c *UserController) Show(w http.ResponseWriter, r *http.Request) {
 	user, err, _ := repositories.GetUser(mux.Vars(r)["id"])
 	if err != nil {
 		http2.JsonError(w, err)
@@ -27,7 +31,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	http2.JsonResponse(w, http.StatusOK, user)
 }
 
-func CreateUser(w http.ResponseWriter, r *http.Request) {
+func (c *UserController) Create(w http.ResponseWriter, r *http.Request) {
 	user, err, _ := repositories.CreateUser(r)
 	if err != nil {
 		http2.JsonError(w, err)
@@ -36,11 +40,11 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	http2.JsonResponse(w, http.StatusCreated, user)
 }
 
-func UpdateUser(w http.ResponseWriter, r *http.Request) {
+func (c *UserController) Update(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func DeleteUser(w http.ResponseWriter, r *http.Request) {
+func (c *UserController) Delete(w http.ResponseWriter, r *http.Request) {
 	err := repositories.DeleteUser(mux.Vars(r)["id"])
 	if err != nil {
 		http2.JsonError(w, err)
