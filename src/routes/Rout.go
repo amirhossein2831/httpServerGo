@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"github.com/amirhossein2831/httpServerGo/src/controller"
+	http2 "github.com/amirhossein2831/httpServerGo/src/http"
 	"github.com/gorilla/mux"
 	"net/http"
 )
@@ -10,10 +12,12 @@ func Routing() *mux.Router {
 
 	// static file
 	r.Handle("/", http.FileServer(http.Dir("static/html")))
+
 	// home
-	homeRoute(r)
+	r.HandleFunc("/home", http2.HelloHandler).Methods("GET")
+
 	// user
-	userRoute(r)
+	CrudRoute(r, "users", &controller.UserController{})
 
 	return r
 }
