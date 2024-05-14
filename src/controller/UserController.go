@@ -12,7 +12,7 @@ type UserController struct {
 }
 
 func (c *UserController) Index(w http.ResponseWriter, r *http.Request) {
-	users, err, _ := repositories.GetUsers()
+	users, err := repositories.GetUsers()
 	if err != nil {
 		http2.JsonError(w, err)
 		return
@@ -22,7 +22,7 @@ func (c *UserController) Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *UserController) Show(w http.ResponseWriter, r *http.Request) {
-	user, err, _ := repositories.GetUser(mux.Vars(r)["id"])
+	user, err := repositories.GetUser(mux.Vars(r)["id"])
 	if err != nil {
 		http2.JsonError(w, err)
 		return
@@ -32,7 +32,7 @@ func (c *UserController) Show(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *UserController) Create(w http.ResponseWriter, r *http.Request) {
-	user, err, _ := repositories.CreateUser(r)
+	user, err := repositories.CreateUser(r)
 	if err != nil {
 		http2.JsonError(w, err)
 		return
@@ -41,7 +41,12 @@ func (c *UserController) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *UserController) Update(w http.ResponseWriter, r *http.Request) {
-
+	user, err := repositories.UpdateUser(r, mux.Vars(r)["id"])
+	if err != nil {
+		http2.JsonError(w, err)
+		return
+	}
+	http2.JsonResponse(w, http.StatusOK, user)
 }
 
 func (c *UserController) Delete(w http.ResponseWriter, r *http.Request) {
