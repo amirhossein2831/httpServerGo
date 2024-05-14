@@ -1,4 +1,4 @@
-package http
+package util
 
 import (
 	"fmt"
@@ -27,22 +27,3 @@ func FormHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("the address is %v \n", r.FormValue("address"))
 
 }
-
-//func UpdateUser(w http.ResponseWriter, r *http.Request) {
-//	var body model.User
-//	vars := mux.Vars(r)
-//	user, err := model.GetUser(vars["id"])
-//	if err != nil {
-//		JsonError(w, err)
-//		return
-//	}
-//
-//	err = json.NewDecoder(r.Body).Decode(&body)
-//	if err != nil {
-//		JsonError(w, err)
-//		return
-//	}
-//
-//	model.UpdateUser(user, body)
-//	JsonResponse(w, http.StatusOK, user)
-//}
