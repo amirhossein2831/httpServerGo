@@ -12,7 +12,7 @@ import (
 
 func GetUsers() ([]model.User, error, *gorm.DB) {
 	var users []model.User
-	res := config.App.GetDB().Find(&users)
+	res := config.App.GetDB().Preload("Profile").Find(&users)
 	if res.Error != nil {
 		return nil, res.Error, nil
 	}
@@ -53,11 +53,13 @@ func DeleteUser(pk string) error {
 	if err != nil {
 		return err
 	}
-	res := config.App.GetDB().Delete(&model.User{}, id)
 
-	if res.Error != nil {
-		return res.Error
+	if err := config.App.GetDB().Where("user_id = ?", id).Delete(&model.Profile{}).Error; err != nil {
+		return err
 	}
 
+	if err := config.App.GetDB().Delete(&model.User{}, id).Error; err != nil {
+		return err
+	}
 	return nil
 }
