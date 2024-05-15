@@ -9,7 +9,7 @@ import (
 
 func GetMovies() ([]model.Movie, error) {
 	var movies []model.Movie
-	res := config.App.GetDB().Preload("Profile").Find(&movies)
+	res := config.App.GetDB().Find(&movies)
 	if res.Error != nil {
 		return nil, res.Error
 	}
