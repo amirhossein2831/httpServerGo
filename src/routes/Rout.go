@@ -18,7 +18,7 @@ func Routing() *mux.Router {
 	// user
 	CrudRoute(r, "users", &controller.UserController{})
 	CrudRoute(r, "movies", &controller.MovieController{})
-	CrudRoute(r, "books", &controller.MovieController{})
+	CrudRoute(r, "books", &controller.BookController{})
 
 	return r
 }
