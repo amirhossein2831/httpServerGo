@@ -10,17 +10,16 @@ import (
 
 func Routing() *mux.Router {
 	r := mux.NewRouter()
+	subRouter := r.PathPrefix("/api/v1/").Subrouter()
 
 	// static file
 	r.Handle("/", http.FileServer(http.Dir("static/html")))
-
-	// home
-	r.HandleFunc("/home", controller.Index).Methods("GET")
+	r.Handle("/home", http.FileServer(http.Dir("static/html")))
 
 	// user
-	CrudRoute(r, "users", &controller.UserController{})
-	CrudRoute(r, "movies", &controller.MovieController{})
-	CrudRoute(r, "books", &controller.BookController{})
+	CrudRoute(subRouter, "users", &controller.UserController{})
+	CrudRoute(subRouter, "movies", &controller.MovieController{})
+	CrudRoute(subRouter, "books", &controller.BookController{})
 
 	return r
 }
