@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// see the api documentation in https://documenter.getpostman.com/view/29634924/2sA3JRYeTg
+// see the api documentation in https://documenter.getpostman.com/view/29634924/2sA3JT1dNa
 
 func Routing() *mux.Router {
 	r := mux.NewRouter()
