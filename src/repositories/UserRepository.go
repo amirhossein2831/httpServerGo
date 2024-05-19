@@ -10,37 +10,53 @@ import (
 
 func GetUsers() ([]model.User, error) {
 	var users []model.User
-	res := config.App.GetDB().Preload("Profile").Find(&users)
-	if res.Error != nil {
-		return nil, res.Error
+
+	err := config.App.GetDB().Preload("Profile").Find(&users).Error
+	if err != nil {
+		return nil, err
 	}
+
 	return users, nil
 }
 
-func GetUser(id string) (model.User, error) {
+func GetUserById(id string) (model.User, error) {
 	var user model.User
 
-	res := config.App.GetDB().First(&user, id)
-	if res.Error != nil {
-		return model.User{}, res.Error
+	err := config.App.GetDB().First(&user, id).Error
+	if err != nil {
+		return model.User{}, err
 	}
+
 	return user, nil
 }
 
+func GetUserByEmail(email string) (model.User, error) {
+	var user model.User
+
+	err := config.App.GetDB().Where("email = ?", email).First(&user).Error
+	if err != nil {
+		return model.User{}, err
+	}
+
+	return user, nil
+}
 func CreateUser(r *http.Request) (model.User, error) {
 	var user model.User
+
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		return model.User{}, err
 	}
+
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return model.User{}, err
 	}
+
 	user.Password = string(hashedPassword)
-	res := config.App.GetDB().Create(&user)
-	if res.Error != nil {
-		return model.User{}, res.Error
+	err = config.App.GetDB().Create(&user).Error
+	if err != nil {
+		return model.User{}, err
 	}
 
 	return user, nil
@@ -48,14 +64,17 @@ func CreateUser(r *http.Request) (model.User, error) {
 
 func UpdateUser(r *http.Request, id string) (model.User, error) {
 	var user model.User
+
 	err := config.App.GetDB().First(&user, id).Error
 	if err != nil {
 		return model.User{}, err
 	}
+
 	err = json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		return model.User{}, err
 	}
+
 	config.App.GetDB().Save(&user)
 
 	return user, nil

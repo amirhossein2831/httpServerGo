@@ -22,7 +22,7 @@ func (c *UserController) Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *UserController) Show(w http.ResponseWriter, r *http.Request) {
-	user, err := repositories.GetUser(mux.Vars(r)["id"])
+	user, err := repositories.GetUserById(mux.Vars(r)["id"])
 	if err != nil {
 		util.JsonError(w, err)
 		return
