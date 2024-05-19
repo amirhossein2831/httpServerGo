@@ -2,14 +2,14 @@ package repositories
 
 import (
 	"encoding/json"
-	"github.com/amirhossein2831/httpServerGo/src/App"
+	"github.com/amirhossein2831/httpServerGo/src/DB"
 	"github.com/amirhossein2831/httpServerGo/src/model"
 	"net/http"
 )
 
 func GetBooks() ([]model.Book, error) {
 	var books []model.Book
-	res := App.App.GetDB().Find(&books)
+	res := DB.GetInstance().GetDb().Find(&books)
 	if res.Error != nil {
 		return nil, res.Error
 	}
@@ -19,7 +19,7 @@ func GetBooks() ([]model.Book, error) {
 func GetBook(id string) (model.Book, error) {
 	var book model.Book
 
-	res := App.App.GetDB().First(&book, id)
+	res := DB.GetInstance().GetDb().First(&book, id)
 	if res.Error != nil {
 		return book, res.Error
 	}
@@ -32,7 +32,7 @@ func CreateBook(r *http.Request) (model.Book, error) {
 	if err != nil {
 		return book, err
 	}
-	res := App.App.GetDB().Create(&book)
+	res := DB.GetInstance().GetDb().Create(&book)
 	if res.Error != nil {
 		return book, res.Error
 	}
@@ -42,7 +42,7 @@ func CreateBook(r *http.Request) (model.Book, error) {
 
 func UpdateBook(r *http.Request, id string) (model.Book, error) {
 	var book model.Book
-	err := App.App.GetDB().First(&book, id).Error
+	err := DB.GetInstance().GetDb().First(&book, id).Error
 	if err != nil {
 		return book, err
 	}
@@ -50,13 +50,13 @@ func UpdateBook(r *http.Request, id string) (model.Book, error) {
 	if err != nil {
 		return book, err
 	}
-	App.App.GetDB().Save(&book)
+	DB.GetInstance().GetDb().Save(&book)
 
 	return book, nil
 }
 
 func DeleteBook(id string) error {
-	if err := App.App.GetDB().Delete(&model.Book{}, id).Error; err != nil {
+	if err := DB.GetInstance().GetDb().Delete(&model.Book{}, id).Error; err != nil {
 		return err
 	}
 	return nil

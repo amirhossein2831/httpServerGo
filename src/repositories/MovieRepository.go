@@ -2,14 +2,14 @@ package repositories
 
 import (
 	"encoding/json"
-	"github.com/amirhossein2831/httpServerGo/src/App"
+	"github.com/amirhossein2831/httpServerGo/src/DB"
 	"github.com/amirhossein2831/httpServerGo/src/model"
 	"net/http"
 )
 
 func GetMovies() ([]model.Movie, error) {
 	var movies []model.Movie
-	res := App.App.GetDB().Find(&movies)
+	res := DB.GetInstance().GetDb().Find(&movies)
 	if res.Error != nil {
 		return nil, res.Error
 	}
@@ -19,7 +19,7 @@ func GetMovies() ([]model.Movie, error) {
 func GetMovie(id string) (model.Movie, error) {
 	var movie model.Movie
 
-	res := App.App.GetDB().First(&movie, id)
+	res := DB.GetInstance().GetDb().First(&movie, id)
 	if res.Error != nil {
 		return movie, res.Error
 	}
@@ -32,7 +32,7 @@ func CreateMovie(r *http.Request) (model.Movie, error) {
 	if err != nil {
 		return movie, err
 	}
-	res := App.App.GetDB().Create(&movie)
+	res := DB.GetInstance().GetDb().Create(&movie)
 	if res.Error != nil {
 		return movie, res.Error
 	}
@@ -42,7 +42,7 @@ func CreateMovie(r *http.Request) (model.Movie, error) {
 
 func UpdateMovie(r *http.Request, id string) (model.Movie, error) {
 	var movie model.Movie
-	err := App.App.GetDB().First(&movie, id).Error
+	err := DB.GetInstance().GetDb().First(&movie, id).Error
 	if err != nil {
 		return movie, err
 	}
@@ -50,13 +50,13 @@ func UpdateMovie(r *http.Request, id string) (model.Movie, error) {
 	if err != nil {
 		return movie, err
 	}
-	App.App.GetDB().Save(&movie)
+	DB.GetInstance().GetDb().Save(&movie)
 
 	return movie, nil
 }
 
 func DeleteMovie(id string) error {
-	if err := App.App.GetDB().Delete(&model.Movie{}, id).Error; err != nil {
+	if err := DB.GetInstance().GetDb().Delete(&model.Movie{}, id).Error; err != nil {
 		return err
 	}
 	return nil
