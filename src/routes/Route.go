@@ -5,17 +5,47 @@ import (
 	"github.com/amirhossein2831/httpServerGo/src/controller"
 	"github.com/gorilla/mux"
 	"net/http"
+	"sync"
 )
 
 // see the api documentation in https://documenter.getpostman.com/view/29634924/2sA3JT1dNa
+var (
+	routerInstance Route
+	once           sync.Once
+)
 
-func Routing() *mux.Router {
-	r := mux.NewRouter()
-	subRouter := r.PathPrefix("/api/v1/").Subrouter()
+type Route interface {
+	GetRouter() *mux.Router
+	SetRouter(router *mux.Router)
+	Routing()
+}
+
+type Router struct {
+	r *mux.Router
+}
+
+func (r *Router) GetRouter() *mux.Router {
+	return r.r
+}
+
+func (r *Router) SetRouter(router *mux.Router) {
+	r.r = router
+}
+
+func GetInstance() Route {
+	once.Do(func() {
+		routerInstance = &Router{r: mux.NewRouter()}
+		routerInstance.Routing()
+	})
+	return routerInstance
+}
+
+func (r *Router) Routing() {
+	subRouter := r.r.PathPrefix("/api/v1/").Subrouter()
 
 	// static file
-	r.Handle("/", http.FileServer(http.Dir("static/html")))
-	r.Handle("/home", http.FileServer(http.Dir("static/html")))
+	r.r.Handle("/", http.FileServer(http.Dir("static/html")))
+	r.r.Handle("/home", http.FileServer(http.Dir("static/html")))
 
 	// single routes
 	Post(subRouter, "/users/login/", controller.Login)
@@ -25,5 +55,4 @@ func Routing() *mux.Router {
 	CrudRoute(subRouter, "movies", &controller.MovieController{}, Middleware.AuthMiddleware)
 	CrudRoute(subRouter, "books", &controller.BookController{}, Middleware.AuthMiddleware)
 
-	return r
 }
