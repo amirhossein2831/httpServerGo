@@ -1,4 +1,4 @@
-package config
+package App
 
 import (
 	"github.com/gorilla/mux"
