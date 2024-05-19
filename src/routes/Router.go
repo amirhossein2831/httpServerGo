@@ -19,42 +19,42 @@ func CrudRoute(r *mux.Router, path string, c controller.Crud, middleware func(ht
 	subRouter.HandleFunc("/{id}", c.Delete).Methods("DELETE")
 }
 
-func Get(r *mux.Router, path string,handler func( http.ResponseWriter, *http.Request), middleware func(http.Handler) http.Handler) {
+func Get(r *mux.Router, path string, handler func(http.ResponseWriter, *http.Request), middleware func(http.Handler) http.Handler) {
 	if middleware != nil {
 		r.HandleFunc(path, handler).Methods("GET").Handler(middleware(http.HandlerFunc(handler)))
-	}else{
+	} else {
 		r.HandleFunc(path, handler).Methods("GET")
 	}
 }
 
-func Post(r *mux.Router, path string,handler func( http.ResponseWriter, *http.Request), middleware func(http.Handler) http.Handler) {
+func Post(r *mux.Router, path string, handler func(http.ResponseWriter, *http.Request), middleware func(http.Handler) http.Handler) {
 	if middleware != nil {
 		r.HandleFunc(path, handler).Methods("POST").Handler(middleware(http.HandlerFunc(handler)))
-	}else{
+	} else {
 		r.HandleFunc(path, handler).Methods("POST")
 	}
 }
 
-func Patch(r *mux.Router, path string,handler func( http.ResponseWriter, *http.Request), middleware func(http.Handler) http.Handler) {
+func Patch(r *mux.Router, path string, handler func(http.ResponseWriter, *http.Request), middleware func(http.Handler) http.Handler) {
 	if middleware != nil {
 		r.HandleFunc(path, handler).Methods("PATCH").Handler(middleware(http.HandlerFunc(handler)))
-	}else{
+	} else {
 		r.HandleFunc(path, handler).Methods("PATCH")
 	}
 }
 
-func Put(r *mux.Router, path string,handler func( http.ResponseWriter, *http.Request), middleware func(http.Handler) http.Handler) {
+func Put(r *mux.Router, path string, handler func(http.ResponseWriter, *http.Request), middleware func(http.Handler) http.Handler) {
 	if middleware != nil {
 		r.HandleFunc(path, handler).Methods("PUT").Handler(middleware(http.HandlerFunc(handler)))
-	}else{
+	} else {
 		r.HandleFunc(path, handler).Methods("PUT")
 	}
 }
 
-func Delete(r *mux.Router, path string,handler func( http.ResponseWriter, *http.Request), middleware func(http.Handler) http.Handler) {
+func Delete(r *mux.Router, path string, handler func(http.ResponseWriter, *http.Request), middleware func(http.Handler) http.Handler) {
 	if middleware != nil {
 		r.HandleFunc(path, handler).Methods("DELETE").Handler(middleware(http.HandlerFunc(handler)))
-	}else{
+	} else {
 		r.HandleFunc(path, handler).Methods("DELETE")
 	}
 }

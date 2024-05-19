@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"github.com/amirhossein2831/httpServerGo/src/Middleware"
 	"github.com/amirhossein2831/httpServerGo/src/controller"
 	"github.com/gorilla/mux"
 	"net/http"
@@ -15,11 +16,14 @@ func Routing() *mux.Router {
 	// static file
 	r.Handle("/", http.FileServer(http.Dir("static/html")))
 	r.Handle("/home", http.FileServer(http.Dir("static/html")))
-	subRouter.HandleFunc("/users/login/", controller.Login).Methods("POST")
-	// user
-	CrudRoute(subRouter, "users", &controller.UserController{})
-	CrudRoute(subRouter, "movies", &controller.MovieController{})
-	CrudRoute(subRouter, "books", &controller.BookController{})
+
+	// single routes
+	Post(subRouter, "/users/login/", controller.Login, nil)
+
+	// crud routes
+	CrudRoute(subRouter, "users", &controller.UserController{}, Middleware.AuthMiddleware)
+	CrudRoute(subRouter, "movies", &controller.MovieController{}, Middleware.AuthMiddleware)
+	CrudRoute(subRouter, "books", &controller.BookController{}, Middleware.AuthMiddleware)
 
 	return r
 }
