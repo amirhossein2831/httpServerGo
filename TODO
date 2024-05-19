@@ -1,0 +1,30 @@
+** use debugger to see the incoming request: Done
+** create a Postgres container: Done
+** support using postgres and mysql at same time: Done
+** aaa state less
+** logs
+zaper prometheus graphana(manitoring)
+elk for store logs
+reqeust response save in db
+validation
+service
+repository
+using response builder
+rate limit middle ware (429) for each route specific rate limit
+add adder attribute of jwt
+
+**
+solid
+clean
+dry
+chain of responsibility
+builder pattern
+migration
+go playground validation
+google wire (dependency injection)
+sql injection
+pagination
+don't pass the request to injection
+validation in controller
+base logic service
+cobra golang to generate cli command

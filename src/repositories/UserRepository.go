@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"encoding/json"
-	"github.com/amirhossein2831/httpServerGo/src/config"
+	"github.com/amirhossein2831/httpServerGo/src/App"
 	"github.com/amirhossein2831/httpServerGo/src/model"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
@@ -11,7 +11,7 @@ import (
 func GetUsers() ([]model.User, error) {
 	var users []model.User
 
-	err := config.App.GetDB().Preload("Profile").Find(&users).Error
+	err := App.App.GetDB().Preload("Profile").Find(&users).Error
 	if err != nil {
 		return nil, err
 	}
@@ -22,7 +22,7 @@ func GetUsers() ([]model.User, error) {
 func GetUserById(id string) (model.User, error) {
 	var user model.User
 
-	err := config.App.GetDB().First(&user, id).Error
+	err := App.App.GetDB().First(&user, id).Error
 	if err != nil {
 		return model.User{}, err
 	}
@@ -33,7 +33,7 @@ func GetUserById(id string) (model.User, error) {
 func GetUserByEmail(email string) (model.User, error) {
 	var user model.User
 
-	err := config.App.GetDB().Where("email = ?", email).First(&user).Error
+	err := App.App.GetDB().Where("email = ?", email).First(&user).Error
 	if err != nil {
 		return model.User{}, err
 	}
@@ -54,7 +54,7 @@ func CreateUser(r *http.Request) (model.User, error) {
 	}
 
 	user.Password = string(hashedPassword)
-	err = config.App.GetDB().Create(&user).Error
+	err = App.App.GetDB().Create(&user).Error
 	if err != nil {
 		return model.User{}, err
 	}
@@ -65,7 +65,7 @@ func CreateUser(r *http.Request) (model.User, error) {
 func UpdateUser(r *http.Request, id string) (model.User, error) {
 	var user model.User
 
-	err := config.App.GetDB().First(&user, id).Error
+	err := App.App.GetDB().First(&user, id).Error
 	if err != nil {
 		return model.User{}, err
 	}
@@ -75,17 +75,17 @@ func UpdateUser(r *http.Request, id string) (model.User, error) {
 		return model.User{}, err
 	}
 
-	config.App.GetDB().Save(&user)
+	App.App.GetDB().Save(&user)
 
 	return user, nil
 }
 
 func DeleteUser(id string) error {
-	if err := config.App.GetDB().Where("user_id = ?", id).Delete(&model.Profile{}).Error; err != nil {
+	if err := App.App.GetDB().Where("user_id = ?", id).Delete(&model.Profile{}).Error; err != nil {
 		return err
 	}
 
-	if err := config.App.GetDB().Delete(&model.User{}, id).Error; err != nil {
+	if err := App.App.GetDB().Delete(&model.User{}, id).Error; err != nil {
 		return err
 	}
 	return nil
