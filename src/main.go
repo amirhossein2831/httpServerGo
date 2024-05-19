@@ -18,11 +18,9 @@ func main() {
 	}
 	println("Table Migrate successfully")
 
-	router := routes.Routing()
-
-	// run server
 	println(fmt.Sprintf("app started at port %v", config.GetInstance().Get("APP_PORT")))
-	if err := http.ListenAndServe(fmt.Sprintf(":%v", config.GetInstance().Get("APP_PORT")), router); err != nil {
+	if err := http.ListenAndServe(fmt.Sprintf(":%v", config.GetInstance().Get("APP_PORT")),
+		routes.GetInstance().GetRouter()); err != nil {
 		log.Fatal(err)
 	}
 }
