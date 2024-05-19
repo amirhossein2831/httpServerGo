@@ -18,7 +18,7 @@ func Routing() *mux.Router {
 	r.Handle("/home", http.FileServer(http.Dir("static/html")))
 
 	// single routes
-	Post(subRouter, "/users/login/", controller.Login, nil)
+	Post(subRouter, "/users/login/", controller.Login)
 
 	// crud routes
 	CrudRoute(subRouter, "users", &controller.UserController{}, Middleware.AuthMiddleware)
