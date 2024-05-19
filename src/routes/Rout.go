@@ -15,7 +15,7 @@ func Routing() *mux.Router {
 	// static file
 	r.Handle("/", http.FileServer(http.Dir("static/html")))
 	r.Handle("/home", http.FileServer(http.Dir("static/html")))
-
+	r.HandleFunc("/users/login/",controller.Login).Methods("POST")
 	// user
 	CrudRoute(subRouter, "users", &controller.UserController{})
 	CrudRoute(subRouter, "movies", &controller.MovieController{})
