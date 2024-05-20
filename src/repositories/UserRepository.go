@@ -69,7 +69,7 @@ func UpdateUser(r *http.Request, id string) (model.User, error) {
 	var user model.User
 	var userRequest request.UserRequest
 
-	err := DB.GetInstance().GetDb().First(&user, id).Error
+	err := DeleteUser(id)
 	if err != nil {
 		return model.User{}, err
 	}
@@ -81,7 +81,16 @@ func UpdateUser(r *http.Request, id string) (model.User, error) {
 
 	user = userRequest.ToUser()
 
-	DB.GetInstance().GetDb().Save(&user)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return model.User{}, err
+	}
+
+	user.Password = string(hashedPassword)
+	err = DB.GetInstance().GetDb().Create(&user).Error
+	if err != nil {
+		return model.User{}, err
+	}
 
 	return user, nil
 }
