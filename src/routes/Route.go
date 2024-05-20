@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/amirhossein2831/httpServerGo/src/Middleware"
-	"github.com/amirhossein2831/httpServerGo/src/controller"
+	"github.com/amirhossein2831/httpServerGo/src/http/controller"
 	"github.com/gorilla/mux"
 	"net/http"
 	"sync"

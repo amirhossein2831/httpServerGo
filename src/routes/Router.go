@@ -2,7 +2,7 @@ package routes
 
 import (
 	"fmt"
-	"github.com/amirhossein2831/httpServerGo/src/controller"
+	"github.com/amirhossein2831/httpServerGo/src/http/controller"
 	"github.com/gorilla/mux"
 	"net/http"
 )
