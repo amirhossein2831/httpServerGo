@@ -66,7 +66,6 @@ func CreateUser(r *http.Request) (model.User, error) {
 }
 
 func UpdateUser(r *http.Request, id string) (model.User, error) {
-	var user model.User
 	var userRequest request.UserRequest
 
 	err := DeleteUser(id)
@@ -79,7 +78,7 @@ func UpdateUser(r *http.Request, id string) (model.User, error) {
 		return model.User{}, err
 	}
 
-	user = userRequest.ToUser()
+	user := userRequest.ToUser()
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {

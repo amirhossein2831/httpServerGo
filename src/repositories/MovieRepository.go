@@ -3,6 +3,7 @@ package repositories
 import (
 	"encoding/json"
 	"github.com/amirhossein2831/httpServerGo/src/DB"
+	"github.com/amirhossein2831/httpServerGo/src/http/request"
 	"github.com/amirhossein2831/httpServerGo/src/model"
 	"net/http"
 )
@@ -27,30 +28,38 @@ func GetMovie(id string) (model.Movie, error) {
 }
 
 func CreateMovie(r *http.Request) (model.Movie, error) {
-	var movie model.Movie
-	err := json.NewDecoder(r.Body).Decode(&movie)
+	var movieRequest request.MovieRequest
+	err := json.NewDecoder(r.Body).Decode(&movieRequest)
 	if err != nil {
-		return movie, err
+		return model.Movie{}, err
 	}
+
+	movie := movieRequest.ToMovie()
 	res := DB.GetInstance().GetDb().Create(&movie)
 	if res.Error != nil {
-		return movie, res.Error
+		return model.Movie{}, res.Error
 	}
 
 	return movie, nil
 }
 
 func UpdateMovie(r *http.Request, id string) (model.Movie, error) {
-	var movie model.Movie
-	err := DB.GetInstance().GetDb().First(&movie, id).Error
+	var movieRequest request.MovieRequest
+
+	err := DeleteMovie(id)
 	if err != nil {
-		return movie, err
+		return model.Movie{}, err
 	}
-	err = json.NewDecoder(r.Body).Decode(&movie)
+
+	err = json.NewDecoder(r.Body).Decode(&movieRequest)
 	if err != nil {
-		return movie, err
+		return model.Movie{}, err
 	}
-	DB.GetInstance().GetDb().Save(&movie)
+	movie := movieRequest.ToMovie()
+	res := DB.GetInstance().GetDb().Create(&movie)
+	if res.Error != nil {
+		return model.Movie{}, res.Error
+	}
 
 	return movie, nil
 }
