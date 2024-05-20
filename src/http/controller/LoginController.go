@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/amirhossein2831/httpServerGo/src/Auth"
+	"github.com/amirhossein2831/httpServerGo/src/http/request"
 	"github.com/amirhossein2831/httpServerGo/src/repositories"
 	"github.com/amirhossein2831/httpServerGo/src/util"
 	"golang.org/x/crypto/bcrypt"
@@ -11,10 +12,7 @@ import (
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
-	var credentials struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
+	var credentials request.CredRequest
 	err := json.NewDecoder(r.Body).Decode(&credentials)
 	if err != nil {
 		util.JsonError(w, err)
