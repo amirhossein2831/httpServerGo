@@ -22,12 +22,10 @@ func main() {
 	}
 	println("Table Migrate successfully")
 
+	// run server
 	println(fmt.Sprintf("app started at port %v", config.GetInstance().Get("APP_PORT")))
 	if err := http.ListenAndServe(fmt.Sprintf(":%v", config.GetInstance().Get("APP_PORT")),
 		routes.GetInstance().GetRouter()); err != nil {
 		log.Fatal(err)
 	}
 }
-
-// create an app with Db,config,router
-// it should not be single ton because we can have several app

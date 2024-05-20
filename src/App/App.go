@@ -25,9 +25,9 @@ type App struct {
 
 func Configure() {
 	application = &App{
+		config: config.GetInstance(),
 		db:     DB.GetInstance(),
 		router: routes.GetInstance(),
-		config: config.GetInstance(),
 	}
 }
 

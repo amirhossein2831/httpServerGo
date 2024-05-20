@@ -36,6 +36,7 @@ func GetInstance() Route {
 	once.Do(func() {
 		routerInstance = &Router{r: mux.NewRouter()}
 		routerInstance.Routing()
+		println("the router is initialized")
 	})
 	return routerInstance
 }
