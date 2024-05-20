@@ -3,6 +3,7 @@ package repositories
 import (
 	"encoding/json"
 	"github.com/amirhossein2831/httpServerGo/src/DB"
+	"github.com/amirhossein2831/httpServerGo/src/http/request"
 	"github.com/amirhossein2831/httpServerGo/src/model"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
@@ -41,12 +42,14 @@ func GetUserByEmail(email string) (model.User, error) {
 	return user, nil
 }
 func CreateUser(r *http.Request) (model.User, error) {
-	var user model.User
+	var userRequest request.UserRequest
 
-	err := json.NewDecoder(r.Body).Decode(&user)
+	err := json.NewDecoder(r.Body).Decode(&userRequest)
 	if err != nil {
 		return model.User{}, err
 	}
+
+	user := userRequest.ToUser()
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
@@ -64,16 +67,19 @@ func CreateUser(r *http.Request) (model.User, error) {
 
 func UpdateUser(r *http.Request, id string) (model.User, error) {
 	var user model.User
+	var userRequest request.UserRequest
 
 	err := DB.GetInstance().GetDb().First(&user, id).Error
 	if err != nil {
 		return model.User{}, err
 	}
 
-	err = json.NewDecoder(r.Body).Decode(&user)
+	err = json.NewDecoder(r.Body).Decode(&userRequest)
 	if err != nil {
 		return model.User{}, err
 	}
+
+	user = userRequest.ToUser()
 
 	DB.GetInstance().GetDb().Save(&user)
 
