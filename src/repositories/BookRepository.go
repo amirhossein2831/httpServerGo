@@ -3,6 +3,7 @@ package repositories
 import (
 	"encoding/json"
 	"github.com/amirhossein2831/httpServerGo/src/DB"
+	"github.com/amirhossein2831/httpServerGo/src/http/request"
 	"github.com/amirhossein2831/httpServerGo/src/model"
 	"net/http"
 )
@@ -27,30 +28,37 @@ func GetBook(id string) (model.Book, error) {
 }
 
 func CreateBook(r *http.Request) (model.Book, error) {
-	var book model.Book
-	err := json.NewDecoder(r.Body).Decode(&book)
+	var bookRequest request.BookRequest
+	err := json.NewDecoder(r.Body).Decode(&bookRequest)
 	if err != nil {
-		return book, err
+		return model.Book{}, err
 	}
+	book := bookRequest.ToBook()
+
 	res := DB.GetInstance().GetDb().Create(&book)
 	if res.Error != nil {
-		return book, res.Error
+		return model.Book{}, res.Error
 	}
 
 	return book, nil
 }
 
 func UpdateBook(r *http.Request, id string) (model.Book, error) {
-	var book model.Book
-	err := DB.GetInstance().GetDb().First(&book, id).Error
+	var bookRequest request.BookRequest
+	err := DeleteBook(id)
 	if err != nil {
-		return book, err
+		return model.Book{}, err
 	}
-	err = json.NewDecoder(r.Body).Decode(&book)
+	err = json.NewDecoder(r.Body).Decode(&bookRequest)
 	if err != nil {
-		return book, err
+		return model.Book{}, err
 	}
-	DB.GetInstance().GetDb().Save(&book)
+	book := bookRequest.ToBook()
+
+	res := DB.GetInstance().GetDb().Create(&book)
+	if res.Error != nil {
+		return model.Book{}, res.Error
+	}
 
 	return book, nil
 }
