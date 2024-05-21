@@ -1,19 +1,29 @@
 package request
 
-import "github.com/amirhossein2831/httpServerGo/src/model"
+import (
+	"github.com/amirhossein2831/httpServerGo/src/model"
+	"github.com/go-playground/validator/v10"
+)
 
 type MovieRequest struct {
-	Name        string `json:"name"`
-	Director    string `json:"director"`
-	Publication string `json:"publication"`
-	WatchTime   int    `json:"watch_time"`
+	Name        string `validate:"required" json:"name"`
+	Director    string `validate:"required" json:"director"`
+	Publication string `validate:"required" json:"publication"`
+	WatchTime   int    `validate:"required,min=0" json:"watch_time"`
 }
 
-func (mr *MovieRequest) ToMovie() model.Movie {
-	return model.Movie{
-		Name:        mr.Name,
-		Director:    mr.Director,
-		Publication: mr.Publication,
-		WatchTime:   mr.WatchTime,
+func (m *MovieRequest) Validate() (model.Mod, error) {
+	validate := validator.New()
+	err := validate.Struct(m)
+
+	if err != nil {
+		return model.Movie{}, validationError(err)
 	}
+
+	return model.Movie{
+		Name:        m.Name,
+		Director:    m.Director,
+		Publication: m.Publication,
+		WatchTime:   m.WatchTime,
+	}, nil
 }

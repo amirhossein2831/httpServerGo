@@ -1,15 +1,20 @@
 package repositories
 
 import (
-	"encoding/json"
 	"github.com/amirhossein2831/httpServerGo/src/DB"
-	"github.com/amirhossein2831/httpServerGo/src/http/request"
 	"github.com/amirhossein2831/httpServerGo/src/model"
 	"golang.org/x/crypto/bcrypt"
-	"net/http"
+	"strconv"
 )
 
-func GetUsers() ([]model.User, error) {
+type UserRepository struct {
+}
+
+func NewUserRepository() *UserRepository {
+	return &UserRepository{}
+}
+
+func (ur *UserRepository) All() ([]model.Mod, error) {
 	var users []model.User
 
 	err := DB.GetInstance().GetDb().Preload("Profile").Find(&users).Error
@@ -17,10 +22,10 @@ func GetUsers() ([]model.User, error) {
 		return nil, err
 	}
 
-	return users, nil
+	return model.UserToMod(users), nil
 }
 
-func GetUserById(id string) (model.User, error) {
+func (ur *UserRepository) Get(id string) (model.Mod, error) {
 	var user model.User
 
 	err := DB.GetInstance().GetDb().First(&user, id).Error
@@ -31,26 +36,19 @@ func GetUserById(id string) (model.User, error) {
 	return user, nil
 }
 
-func GetUserByEmail(email string) (model.User, error) {
+func (ur *UserRepository) GetByColumn(column, value string) (model.Mod, error) {
 	var user model.User
 
-	err := DB.GetInstance().GetDb().Where("email = ?", email).First(&user).Error
+	err := DB.GetInstance().GetDb().Where(column+" = ?", value).First(&user).Error
 	if err != nil {
 		return model.User{}, err
 	}
 
 	return user, nil
 }
-func CreateUser(r *http.Request) (model.User, error) {
-	var userRequest request.UserRequest
 
-	err := json.NewDecoder(r.Body).Decode(&userRequest)
-	if err != nil {
-		return model.User{}, err
-	}
-
-	user := userRequest.ToUser()
-
+func (ur *UserRepository) Create(data model.Mod) (model.Mod, error) {
+	user := data.(model.User)
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return model.User{}, err
@@ -65,20 +63,12 @@ func CreateUser(r *http.Request) (model.User, error) {
 	return user, nil
 }
 
-func UpdateUser(r *http.Request, id string) (model.User, error) {
-	var userRequest request.UserRequest
-
-	err := DeleteUser(id)
+func (ur *UserRepository) Update(data model.Mod, id string) (model.Mod, error) {
+	user := data.(model.User)
+	err := ur.HardDelete(id)
 	if err != nil {
 		return model.User{}, err
 	}
-
-	err = json.NewDecoder(r.Body).Decode(&userRequest)
-	if err != nil {
-		return model.User{}, err
-	}
-
-	user := userRequest.ToUser()
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
@@ -86,6 +76,8 @@ func UpdateUser(r *http.Request, id string) (model.User, error) {
 	}
 
 	user.Password = string(hashedPassword)
+	Id, _ := strconv.Atoi(id)
+	user.ID = uint(Id)
 	err = DB.GetInstance().GetDb().Create(&user).Error
 	if err != nil {
 		return model.User{}, err
@@ -94,12 +86,23 @@ func UpdateUser(r *http.Request, id string) (model.User, error) {
 	return user, nil
 }
 
-func DeleteUser(id string) error {
+func (ur *UserRepository) SoftDelete(id string) error {
 	if err := DB.GetInstance().GetDb().Where("user_id = ?", id).Delete(&model.Profile{}).Error; err != nil {
 		return err
 	}
 
 	if err := DB.GetInstance().GetDb().Delete(&model.User{}, id).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (ur *UserRepository) HardDelete(id string) error {
+	if err := DB.GetInstance().GetDb().Unscoped().Where("user_id = ?", id).Delete(&model.Profile{}).Error; err != nil {
+		return err
+	}
+
+	if err := DB.GetInstance().GetDb().Unscoped().Delete(&model.User{}, id).Error; err != nil {
 		return err
 	}
 	return nil

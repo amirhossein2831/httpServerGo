@@ -8,3 +8,13 @@ type Book struct {
 	Author      string `json:"author"`
 	Publication string `json:"publication"`
 }
+
+func (b Book) IsModel() {}
+
+func BookToMod(books []Book) []Mod {
+	mods := make([]Mod, len(books))
+	for i, u := range books {
+		mods[i] = Mod(u)
+	}
+	return mods
+}

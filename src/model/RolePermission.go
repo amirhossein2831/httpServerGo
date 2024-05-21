@@ -4,9 +4,8 @@ import "gorm.io/gorm"
 
 type Role struct {
 	gorm.Model
-	Name        string `gorm:"type:varchar(50);not null" json:"name"`
-	Description string `json:"description"`
-
+	Name        string       `gorm:"type:varchar(50);not null" json:"name"`
+	Description string       `json:"description"`
 	Permissions []Permission `gorm:"many2many:role_permissions;" json:"permissions"`
 }
 
@@ -17,6 +16,9 @@ type Permission struct {
 
 	Roles []Role `gorm:"many2many:role_permissions;" json:"roles"`
 }
+
+func (r Role) IsModel()       {}
+func (p Permission) IsModel() {}
 
 type RolePermission struct {
 	RoleID       uint `gorm:"primaryKey"`
@@ -46,4 +48,20 @@ func HasRole(user User, roles []string) bool {
 		}
 	}
 	return false
+}
+
+func RoleToMod(roles []Role) []Mod {
+	mods := make([]Mod, len(roles))
+	for i, u := range roles {
+		mods[i] = Mod(u)
+	}
+	return mods
+}
+
+func PermissionToMod(permissions []Permission) []Mod {
+	mods := make([]Mod, len(permissions))
+	for i, u := range permissions {
+		mods[i] = Mod(u)
+	}
+	return mods
 }

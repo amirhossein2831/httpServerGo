@@ -12,3 +12,13 @@ type Profile struct {
 	BirthData time.Time `json:"birth-data"`
 	UserID    uint      `json:"user-id"`
 }
+
+func (p Profile) IsModel() {}
+
+func ProfileToMod(profiles []Profile) []Mod {
+	mods := make([]Mod, len(profiles))
+	for i, u := range profiles {
+		mods[i] = Mod(u)
+	}
+	return mods
+}

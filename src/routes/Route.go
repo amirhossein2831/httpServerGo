@@ -51,8 +51,7 @@ func (r *Router) Routing() {
 	Post(subRouter, "/users/login/", controller.Login)
 
 	// crud routes
-	CrudRoute(subRouter, "users", &controller.UserController{}, Middleware.AuthMiddleware, Middleware.RoleMiddleware([]string{"user"}))
-	CrudRoute(subRouter, "movies", &controller.MovieController{}, Middleware.AuthMiddleware, Middleware.RoleMiddleware([]string{"movie"}))
-	CrudRoute(subRouter, "books", &controller.BookController{}, Middleware.AuthMiddleware, Middleware.RoleMiddleware([]string{"movie"}))
-
+	CrudRoute(subRouter, "users", controller.NewUserController(), Middleware.AuthMiddleware, Middleware.RoleMiddleware([]string{"user"}))
+	CrudRoute(subRouter, "movies", controller.NewMovieController(), Middleware.AuthMiddleware, Middleware.RoleMiddleware([]string{"movie"}))
+	CrudRoute(subRouter, "books", controller.NewBookController(), Middleware.AuthMiddleware, Middleware.RoleMiddleware([]string{"book"}))
 }

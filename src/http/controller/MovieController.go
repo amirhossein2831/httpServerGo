@@ -1,18 +1,26 @@
 package controller
 
 import (
-	"github.com/amirhossein2831/httpServerGo/src/repositories"
+	"encoding/json"
+	"github.com/amirhossein2831/httpServerGo/src/http/request"
+	"github.com/amirhossein2831/httpServerGo/src/http/service"
 	"github.com/amirhossein2831/httpServerGo/src/util"
 	"github.com/gorilla/mux"
 	"net/http"
 )
 
 type MovieController struct {
-	Crud
+	service service.Service
+}
+
+func NewMovieController() *MovieController {
+	return &MovieController{
+		service: service.NewMovieService(),
+	}
 }
 
 func (c *MovieController) Index(w http.ResponseWriter, r *http.Request) {
-	movies, err := repositories.GetMovies()
+	movies, err := c.service.Index()
 	if err != nil {
 		util.JsonError(w, err)
 		return
@@ -22,7 +30,7 @@ func (c *MovieController) Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *MovieController) Show(w http.ResponseWriter, r *http.Request) {
-	movie, err := repositories.GetMovie(mux.Vars(r)["id"])
+	movie, err := c.service.Show(mux.Vars(r)["id"])
 	if err != nil {
 		util.JsonError(w, err)
 		return
@@ -32,25 +40,41 @@ func (c *MovieController) Show(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *MovieController) Create(w http.ResponseWriter, r *http.Request) {
-	movie, err := repositories.CreateMovie(r)
+	var movieRequest request.MovieRequest
+	err := json.NewDecoder(r.Body).Decode(&movieRequest)
 	if err != nil {
 		util.JsonError(w, err)
 		return
 	}
+
+	movie, err := c.service.Create(&movieRequest)
+	if err != nil {
+		util.JsonError(w, err)
+		return
+	}
+
 	util.JsonResponse(w, http.StatusCreated, movie)
 }
 
 func (c *MovieController) Update(w http.ResponseWriter, r *http.Request) {
-	movie, err := repositories.UpdateMovie(r, mux.Vars(r)["id"])
+	var movieRequest request.MovieRequest
+	err := json.NewDecoder(r.Body).Decode(&movieRequest)
 	if err != nil {
 		util.JsonError(w, err)
 		return
 	}
+
+	movie, err := c.service.Update(&movieRequest, mux.Vars(r)["id"])
+	if err != nil {
+		util.JsonError(w, err)
+		return
+	}
+
 	util.JsonResponse(w, http.StatusOK, movie)
 }
 
 func (c *MovieController) Delete(w http.ResponseWriter, r *http.Request) {
-	err := repositories.DeleteMovie(mux.Vars(r)["id"])
+	err := c.service.Delete(mux.Vars(r)["id"])
 	if err != nil {
 		util.JsonError(w, err)
 		return

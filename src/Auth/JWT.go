@@ -2,17 +2,21 @@ package Auth
 
 import (
 	"errors"
+	"github.com/amirhossein2831/httpServerGo/src/config"
 	"github.com/golang-jwt/jwt/v5"
 	"time"
 )
 
-var secretKey = []byte("secret-key")
+var secretKey = []byte(config.GetInstance().Get("JWT_SECRET_KEY"))
 
 func CreateToken(email string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
 			"email": email,
 			"exp":   time.Now().Add(time.Hour * 48).Unix(),
+			"nbf":   time.Now().Unix(),
+			"iat":   time.Now().Unix(),
+			"iss":   config.GetInstance().Get("JWT_ISSUER"),
 		})
 	tokenString, err := token.SignedString(secretKey)
 	if err != nil {
