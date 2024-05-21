@@ -14,7 +14,19 @@ type User struct {
 	Roles     []Role  `gorm:"many2many:user_roles;" json:"roles"`
 }
 
+func (u User) IsModel() {
+
+}
+
 type UserRole struct {
 	UserID uint `gorm:"primaryKey"`
 	RoleID uint `gorm:"primaryKey"`
+}
+
+func UserToMod(users []User) []Mod {
+	mods := make([]Mod, len(users))
+	for i, u := range users {
+		mods[i] = Mod(u)
+	}
+	return mods
 }
