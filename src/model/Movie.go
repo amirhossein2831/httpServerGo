@@ -3,7 +3,6 @@ package model
 import "gorm.io/gorm"
 
 type Movie struct {
-	Mod
 	gorm.Model
 	Name        string `json:"name"`
 	Director    string `json:"director"`
