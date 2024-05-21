@@ -3,18 +3,25 @@ package controller
 import (
 	"encoding/json"
 	"github.com/amirhossein2831/httpServerGo/src/http/request"
-	"github.com/amirhossein2831/httpServerGo/src/repositories"
+	"github.com/amirhossein2831/httpServerGo/src/http/service"
 	"github.com/amirhossein2831/httpServerGo/src/util"
 	"github.com/gorilla/mux"
 	"net/http"
 )
 
 type BookController struct {
+	service service.Service
 	Crud
 }
 
+func NewBookController() *BookController {
+	return &BookController{
+		service: service.NewMovieService(),
+	}
+}
+
 func (c *BookController) Index(w http.ResponseWriter, r *http.Request) {
-	books, err := repositories.GetBooks()
+	books, err := c.service.Index()
 	if err != nil {
 		util.JsonError(w, err)
 		return
@@ -24,7 +31,7 @@ func (c *BookController) Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *BookController) Show(w http.ResponseWriter, r *http.Request) {
-	book, err := repositories.GetBook(mux.Vars(r)["id"])
+	book, err := c.service.Show(mux.Vars(r)["id"])
 	if err != nil {
 		util.JsonError(w, err)
 		return
@@ -41,16 +48,12 @@ func (c *BookController) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	book, err := bookRequest.Validate()
+	book, err := c.service.Create(&bookRequest)
 	if err != nil {
 		util.JsonError(w, err)
 		return
 	}
-	book, err = repositories.CreateBook(book)
-	if err != nil {
-		util.JsonError(w, err)
-		return
-	}
+
 	util.JsonResponse(w, http.StatusCreated, book)
 }
 
@@ -62,22 +65,17 @@ func (c *BookController) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	book, err := bookRequest.Validate()
+	book, err := c.service.Update(&bookRequest, mux.Vars(r)["id"])
 	if err != nil {
 		util.JsonError(w, err)
 		return
 	}
 
-	book, err = repositories.UpdateBook(book, mux.Vars(r)["id"])
-	if err != nil {
-		util.JsonError(w, err)
-		return
-	}
 	util.JsonResponse(w, http.StatusOK, book)
 }
 
 func (c *BookController) Delete(w http.ResponseWriter, r *http.Request) {
-	err := repositories.SoftDeleteBook(mux.Vars(r)["id"])
+	err := c.service.Delete(mux.Vars(r)["id"])
 	if err != nil {
 		util.JsonError(w, err)
 		return
