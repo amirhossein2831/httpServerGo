@@ -1,12 +1,10 @@
 package repositories
 
 import (
-	"encoding/json"
 	"github.com/amirhossein2831/httpServerGo/src/DB"
-	"github.com/amirhossein2831/httpServerGo/src/http/request"
 	"github.com/amirhossein2831/httpServerGo/src/model"
 	"golang.org/x/crypto/bcrypt"
-	"net/http"
+	"strconv"
 )
 
 func GetUsers() ([]model.User, error) {
@@ -41,16 +39,8 @@ func GetUserByEmail(email string) (model.User, error) {
 
 	return user, nil
 }
-func CreateUser(r *http.Request) (model.User, error) {
-	var userRequest request.UserRequest
 
-	err := json.NewDecoder(r.Body).Decode(&userRequest)
-	if err != nil {
-		return model.User{}, err
-	}
-
-	user := userRequest.ToUser()
-
+func CreateUser(user model.User) (model.User, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return model.User{}, err
@@ -65,20 +55,11 @@ func CreateUser(r *http.Request) (model.User, error) {
 	return user, nil
 }
 
-func UpdateUser(r *http.Request, id string) (model.User, error) {
-	var userRequest request.UserRequest
-
-	err := DeleteUser(id)
+func UpdateUser(user model.User, id string) (model.User, error) {
+	err := HardDeleteUser(id)
 	if err != nil {
 		return model.User{}, err
 	}
-
-	err = json.NewDecoder(r.Body).Decode(&userRequest)
-	if err != nil {
-		return model.User{}, err
-	}
-
-	user := userRequest.ToUser()
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
@@ -86,6 +67,8 @@ func UpdateUser(r *http.Request, id string) (model.User, error) {
 	}
 
 	user.Password = string(hashedPassword)
+	Id, _ := strconv.Atoi(id)
+	user.ID = uint(Id)
 	err = DB.GetInstance().GetDb().Create(&user).Error
 	if err != nil {
 		return model.User{}, err
@@ -94,12 +77,23 @@ func UpdateUser(r *http.Request, id string) (model.User, error) {
 	return user, nil
 }
 
-func DeleteUser(id string) error {
+func SoftDeleteUser(id string) error {
 	if err := DB.GetInstance().GetDb().Where("user_id = ?", id).Delete(&model.Profile{}).Error; err != nil {
 		return err
 	}
 
 	if err := DB.GetInstance().GetDb().Delete(&model.User{}, id).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func HardDeleteUser(id string) error {
+	if err := DB.GetInstance().GetDb().Unscoped().Where("user_id = ?", id).Delete(&model.Profile{}).Error; err != nil {
+		return err
+	}
+
+	if err := DB.GetInstance().GetDb().Unscoped().Delete(&model.User{}, id).Error; err != nil {
 		return err
 	}
 	return nil
