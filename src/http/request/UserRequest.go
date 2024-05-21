@@ -12,7 +12,7 @@ type UserRequest struct {
 	Password  string `validate:"required,min=8" json:"password"`
 }
 
-func (ur *UserRequest) Validate() (model.User, error) {
+func (ur *UserRequest) Validate() (model.Mod, error) {
 	validate := validator.New()
 	err := validate.Struct(ur)
 

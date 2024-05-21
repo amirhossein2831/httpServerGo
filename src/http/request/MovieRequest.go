@@ -12,7 +12,7 @@ type MovieRequest struct {
 	WatchTime   int    `validate:"required,min=0" json:"watch_time"`
 }
 
-func (m *MovieRequest) Validate() (model.Movie, error) {
+func (m *MovieRequest) Validate() (model.Mod, error) {
 	validate := validator.New()
 	err := validate.Struct(m)
 

@@ -11,7 +11,7 @@ type BookRequest struct {
 	Publication string `validate:"required" json:"publication"`
 }
 
-func (b *BookRequest) Validate() (model.Book, error) {
+func (b *BookRequest) Validate() (model.Mod, error) {
 	validate := validator.New()
 	err := validate.Struct(b)
 

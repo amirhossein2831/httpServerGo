@@ -13,7 +13,7 @@ type ProfileRequest struct {
 	UserID    uint      `validate:"" json:"user-id"`
 }
 
-func (p *ProfileRequest) Validate() (model.Profile, error) {
+func (p *ProfileRequest) Validate() (model.Mod, error) {
 	validate := validator.New()
 	err := validate.Struct(p)
 
