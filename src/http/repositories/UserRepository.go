@@ -36,10 +36,10 @@ func (ur *UserRepository) Get(id string) (model.Mod, error) {
 	return user, nil
 }
 
-func (ur *UserRepository) GetByColumn(email string) (model.Mod, error) {
+func (ur *UserRepository) GetByColumn(column, value string) (model.Mod, error) {
 	var user model.User
 
-	err := DB.GetInstance().GetDb().Where("email = ?", email).First(&user).Error
+	err := DB.GetInstance().GetDb().Where(column+" = ?", value).First(&user).Error
 	if err != nil {
 		return model.User{}, err
 	}
