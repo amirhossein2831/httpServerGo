@@ -45,7 +45,7 @@ func (c *UserController) Create(w http.ResponseWriter, r *http.Request) {
 		util.JsonError(w, err)
 		return
 	}
-	user, err := c.service.Create(userRequest)
+	user, err := c.service.Create(&userRequest)
 	if err != nil {
 		util.JsonError(w, err)
 		return
@@ -62,7 +62,7 @@ func (c *UserController) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := c.service.Update(userRequest, mux.Vars(r)["id"])
+	user, err := c.service.Update(&userRequest, mux.Vars(r)["id"])
 	if err != nil {
 		util.JsonError(w, err)
 		return
