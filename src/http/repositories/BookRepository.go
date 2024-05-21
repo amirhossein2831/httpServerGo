@@ -6,58 +6,74 @@ import (
 	"strconv"
 )
 
-func GetBooks() ([]model.Book, error) {
-	var books []model.Book
-	res := DB.GetInstance().GetDb().Find(&books)
-	if res.Error != nil {
-		return nil, res.Error
-	}
-	return books, nil
+type BookRepository struct {
 }
 
-func GetBook(id string) (model.Book, error) {
+func NewBookRepository() *BookRepository {
+	return &BookRepository{}
+}
+
+func (ur *BookRepository) All() ([]model.Mod, error) {
+	var books []model.Book
+
+	err := DB.GetInstance().GetDb().Find(&books).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return model.BookToMod(books), nil
+}
+
+func (ur *BookRepository) Get(id string) (model.Mod, error) {
 	var book model.Book
 
-	res := DB.GetInstance().GetDb().First(&book, id)
-	if res.Error != nil {
-		return book, res.Error
-	}
-	return book, nil
-}
-
-func CreateBook(book model.Book) (model.Book, error) {
-	res := DB.GetInstance().GetDb().Create(&book)
-	if res.Error != nil {
-		return model.Book{}, res.Error
+	err := DB.GetInstance().GetDb().First(&book, id).Error
+	if err != nil {
+		return model.Book{}, err
 	}
 
 	return book, nil
 }
+func (ur *BookRepository) GetByColumn(email string) (model.Mod, error) {
+	return nil, nil
+}
 
-func UpdateBook(book model.Book, id string) (model.Book, error) {
-	err := HardDeleteBook(id)
+func (ur *BookRepository) Create(data model.Mod) (model.Mod, error) {
+	book := data.(model.Book)
+
+	err := DB.GetInstance().GetDb().Create(&book).Error
+	if err != nil {
+		return model.Book{}, err
+	}
+
+	return book, nil
+}
+
+func (ur *BookRepository) Update(data model.Mod, id string) (model.Mod, error) {
+	book := data.(model.Book)
+	err := ur.HardDelete(id)
 	if err != nil {
 		return model.Book{}, err
 	}
 
 	Id, _ := strconv.Atoi(id)
 	book.ID = uint(Id)
-	res := DB.GetInstance().GetDb().Create(&book)
-	if res.Error != nil {
-		return model.Book{}, res.Error
+	err = DB.GetInstance().GetDb().Create(&book).Error
+	if err != nil {
+		return model.Book{}, err
 	}
 
 	return book, nil
 }
 
-func SoftDeleteBook(id string) error {
+func (ur *BookRepository) SoftDelete(id string) error {
 	if err := DB.GetInstance().GetDb().Delete(&model.Book{}, id).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func HardDeleteBook(id string) error {
+func (ur *BookRepository) HardDelete(id string) error {
 	if err := DB.GetInstance().GetDb().Unscoped().Delete(&model.Book{}, id).Error; err != nil {
 		return err
 	}
