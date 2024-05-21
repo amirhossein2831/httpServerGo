@@ -18,6 +18,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		util.JsonError(w, err)
 		return
 	}
+	credentials, err = credentials.Validate()
+	if err != nil {
+		util.JsonError(w, err)
+		return
+	}
 
 	auth, err := authenticate(credentials.Email, credentials.Password)
 	if err != nil {
