@@ -6,58 +6,75 @@ import (
 	"strconv"
 )
 
-func GetMovies() ([]model.Movie, error) {
-	var movies []model.Movie
-	res := DB.GetInstance().GetDb().Find(&movies)
-	if res.Error != nil {
-		return nil, res.Error
-	}
-	return movies, nil
+type MovieRepository struct {
 }
 
-func GetMovie(id string) (model.Movie, error) {
+func NewMovieRepository() *MovieRepository {
+	return &MovieRepository{}
+}
+
+func (ur *MovieRepository) All() ([]model.Mod, error) {
+	var movies []model.Movie
+
+	err := DB.GetInstance().GetDb().Find(&movies).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return model.MovieToMod(movies), nil
+}
+
+func (ur *MovieRepository) Get(id string) (model.Mod, error) {
 	var movie model.Movie
 
-	res := DB.GetInstance().GetDb().First(&movie, id)
-	if res.Error != nil {
-		return movie, res.Error
-	}
-	return movie, nil
-}
-
-func CreateMovie(movie model.Movie) (model.Movie, error) {
-	res := DB.GetInstance().GetDb().Create(&movie)
-	if res.Error != nil {
-		return model.Movie{}, res.Error
+	err := DB.GetInstance().GetDb().First(&movie, id).Error
+	if err != nil {
+		return model.Movie{}, err
 	}
 
 	return movie, nil
 }
 
-func UpdateMovie(movie model.Movie, id string) (model.Movie, error) {
-	err := HardDeleteMovie(id)
+func (ur *MovieRepository) GetByColumn(email string) (model.Mod, error) {
+	return nil, nil
+}
+
+func (ur *MovieRepository) Create(data model.Mod) (model.Mod, error) {
+	movie := data.(model.Movie)
+
+	err := DB.GetInstance().GetDb().Create(&movie).Error
+	if err != nil {
+		return model.Movie{}, err
+	}
+
+	return movie, nil
+}
+
+func (ur *MovieRepository) Update(data model.Mod, id string) (model.Mod, error) {
+	movie := data.(model.User)
+	err := ur.HardDelete(id)
 	if err != nil {
 		return model.Movie{}, err
 	}
 
 	Id, _ := strconv.Atoi(id)
 	movie.ID = uint(Id)
-	res := DB.GetInstance().GetDb().Create(&movie)
-	if res.Error != nil {
-		return model.Movie{}, res.Error
+	err = DB.GetInstance().GetDb().Create(&movie).Error
+	if err != nil {
+		return model.Movie{}, err
 	}
 
 	return movie, nil
 }
 
-func SoftDeleteMovie(id string) error {
+func (ur *MovieRepository) SoftDelete(id string) error {
 	if err := DB.GetInstance().GetDb().Delete(&model.Movie{}, id).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func HardDeleteMovie(id string) error {
+func (ur *MovieRepository) HardDelete(id string) error {
 	if err := DB.GetInstance().GetDb().Unscoped().Delete(&model.Movie{}, id).Error; err != nil {
 		return err
 	}
