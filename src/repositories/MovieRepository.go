@@ -1,11 +1,9 @@
 package repositories
 
 import (
-	"encoding/json"
 	"github.com/amirhossein2831/httpServerGo/src/DB"
-	"github.com/amirhossein2831/httpServerGo/src/http/request"
 	"github.com/amirhossein2831/httpServerGo/src/model"
-	"net/http"
+	"strconv"
 )
 
 func GetMovies() ([]model.Movie, error) {
@@ -27,14 +25,7 @@ func GetMovie(id string) (model.Movie, error) {
 	return movie, nil
 }
 
-func CreateMovie(r *http.Request) (model.Movie, error) {
-	var movieRequest request.MovieRequest
-	err := json.NewDecoder(r.Body).Decode(&movieRequest)
-	if err != nil {
-		return model.Movie{}, err
-	}
-
-	movie := movieRequest.ToMovie()
+func CreateMovie(movie model.Movie) (model.Movie, error) {
 	res := DB.GetInstance().GetDb().Create(&movie)
 	if res.Error != nil {
 		return model.Movie{}, res.Error
@@ -43,19 +34,14 @@ func CreateMovie(r *http.Request) (model.Movie, error) {
 	return movie, nil
 }
 
-func UpdateMovie(r *http.Request, id string) (model.Movie, error) {
-	var movieRequest request.MovieRequest
-
-	err := DeleteMovie(id)
+func UpdateMovie(movie model.Movie, id string) (model.Movie, error) {
+	err := HardDeleteMovie(id)
 	if err != nil {
 		return model.Movie{}, err
 	}
 
-	err = json.NewDecoder(r.Body).Decode(&movieRequest)
-	if err != nil {
-		return model.Movie{}, err
-	}
-	movie := movieRequest.ToMovie()
+	Id, _ := strconv.Atoi(id)
+	movie.ID = uint(Id)
 	res := DB.GetInstance().GetDb().Create(&movie)
 	if res.Error != nil {
 		return model.Movie{}, res.Error
@@ -64,8 +50,15 @@ func UpdateMovie(r *http.Request, id string) (model.Movie, error) {
 	return movie, nil
 }
 
-func DeleteMovie(id string) error {
+func SoftDeleteMovie(id string) error {
 	if err := DB.GetInstance().GetDb().Delete(&model.Movie{}, id).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func HardDeleteMovie(id string) error {
+	if err := DB.GetInstance().GetDb().Unscoped().Delete(&model.Movie{}, id).Error; err != nil {
 		return err
 	}
 	return nil

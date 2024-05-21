@@ -78,7 +78,7 @@ func (c *UserController) Update(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *UserController) Delete(w http.ResponseWriter, r *http.Request) {
-	err := repositories.HardDeleteUser(mux.Vars(r)["id"])
+	err := repositories.SoftDeleteUser(mux.Vars(r)["id"])
 	if err != nil {
 		util.JsonError(w, err)
 		return
