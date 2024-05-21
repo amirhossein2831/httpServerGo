@@ -11,4 +11,10 @@ type User struct {
 	Email     string  `gorm:"unique;not null" json:"email"`
 	Password  string  `json:"password"`
 	Profile   Profile `json:"profile"`
+	Roles     []Role  `gorm:"many2many:user_roles;" json:"roles"`
+}
+
+type UserRole struct {
+	UserID uint `gorm:"primaryKey"`
+	RoleID uint `gorm:"primaryKey"`
 }

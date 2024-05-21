@@ -36,3 +36,19 @@ func VerifyToken(tokenString string) error {
 
 	return nil
 }
+
+func RetainClaim(tokenString string) (jwt.MapClaims, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return secretKey, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if !token.Valid {
+		return nil, errors.New("invalid token")
+	}
+
+	claims, _ := token.Claims.(jwt.MapClaims)
+	return claims, nil
+}
