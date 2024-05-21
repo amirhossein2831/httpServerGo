@@ -1,17 +1,27 @@
 package request
 
-import "github.com/amirhossein2831/httpServerGo/src/model"
+import (
+	"github.com/amirhossein2831/httpServerGo/src/model"
+	"github.com/go-playground/validator/v10"
+)
 
 type BookRequest struct {
-	Name        string `gorm:"type:varchar(25);not null" json:"name"`
-	Author      string `json:"author"`
-	Publication string `json:"publication"`
+	Name        string `validate:"required,max=25" json:"name"`
+	Author      string `validate:"required" json:"author"`
+	Publication string `validate:"required" json:"publication"`
 }
 
-func (br *BookRequest) ToBook() model.Book {
-	return model.Book{
-		Name:        br.Name,
-		Author:      br.Author,
-		Publication: br.Publication,
+func (b *BookRequest) Validate() (model.Book, error) {
+	validate := validator.New()
+	err := validate.Struct(b)
+
+	if err != nil {
+		return model.Book{}, validationError(err)
 	}
+
+	return model.Book{
+		Name:        b.Name,
+		Author:      b.Author,
+		Publication: b.Publication,
+	}, nil
 }
