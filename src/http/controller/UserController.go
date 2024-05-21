@@ -16,7 +16,7 @@ type UserController struct {
 
 func NewUserController() *UserController {
 	return &UserController{
-		service: &service.UserService{},
+		service: service.NewUserService(),
 	}
 }
 
@@ -68,7 +68,7 @@ func (c *UserController) Update(w http.ResponseWriter, r *http.Request) {
 		util.JsonError(w, err)
 		return
 	}
-	
+
 	util.JsonResponse(w, http.StatusOK, user)
 }
 
