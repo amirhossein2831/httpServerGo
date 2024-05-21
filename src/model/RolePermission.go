@@ -22,3 +22,28 @@ type RolePermission struct {
 	RoleID       uint `gorm:"primaryKey"`
 	PermissionID uint `gorm:"primaryKey"`
 }
+
+func HasPermission(user User, permissions []string) bool {
+	for _, role := range user.Roles {
+		for _, rolePermission := range role.Permissions {
+			for _, permission := range permissions {
+				if rolePermission.Name == permission {
+					return true
+				}
+			}
+		}
+	}
+
+	return false
+}
+
+func HasRole(user User, roles []string) bool {
+	for _, role := range user.Roles {
+		for _, strRole := range roles {
+			if role.Name == strRole {
+				return true
+			}
+		}
+	}
+	return false
+}
