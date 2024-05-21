@@ -7,7 +7,14 @@ import (
 	"strconv"
 )
 
-func GetUsers() ([]model.User, error) {
+type UserRepository struct {
+}
+
+func NewUserRepository() *UserRepository {
+	return &UserRepository{}
+}
+
+func (ur *UserRepository) All() ([]model.User, error) {
 	var users []model.User
 
 	err := DB.GetInstance().GetDb().Preload("Profile").Find(&users).Error
@@ -18,7 +25,7 @@ func GetUsers() ([]model.User, error) {
 	return users, nil
 }
 
-func GetUserById(id string) (model.User, error) {
+func (ur *UserRepository) Get(id string) (model.User, error) {
 	var user model.User
 
 	err := DB.GetInstance().GetDb().First(&user, id).Error
@@ -29,7 +36,7 @@ func GetUserById(id string) (model.User, error) {
 	return user, nil
 }
 
-func GetUserByEmail(email string) (model.User, error) {
+func (ur *UserRepository) GetByColumn(email string) (model.User, error) {
 	var user model.User
 
 	err := DB.GetInstance().GetDb().Where("email = ?", email).First(&user).Error
@@ -40,7 +47,7 @@ func GetUserByEmail(email string) (model.User, error) {
 	return user, nil
 }
 
-func CreateUser(user model.User) (model.User, error) {
+func (ur *UserRepository) Create(user model.User) (model.User, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return model.User{}, err
@@ -55,8 +62,8 @@ func CreateUser(user model.User) (model.User, error) {
 	return user, nil
 }
 
-func UpdateUser(user model.User, id string) (model.User, error) {
-	err := HardDeleteUser(id)
+func (ur *UserRepository) Update(user model.User, id string) (model.User, error) {
+	err := ur.HardDelete(id)
 	if err != nil {
 		return model.User{}, err
 	}
@@ -77,7 +84,7 @@ func UpdateUser(user model.User, id string) (model.User, error) {
 	return user, nil
 }
 
-func SoftDeleteUser(id string) error {
+func (ur *UserRepository) SoftDelete(id string) error {
 	if err := DB.GetInstance().GetDb().Where("user_id = ?", id).Delete(&model.Profile{}).Error; err != nil {
 		return err
 	}
@@ -88,7 +95,7 @@ func SoftDeleteUser(id string) error {
 	return nil
 }
 
-func HardDeleteUser(id string) error {
+func (ur *UserRepository) HardDelete(id string) error {
 	if err := DB.GetInstance().GetDb().Unscoped().Where("user_id = ?", id).Delete(&model.Profile{}).Error; err != nil {
 		return err
 	}
