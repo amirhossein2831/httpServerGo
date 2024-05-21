@@ -1,21 +1,31 @@
 package request
 
-import "github.com/amirhossein2831/httpServerGo/src/model"
+import (
+	"github.com/amirhossein2831/httpServerGo/src/model"
+	"github.com/go-playground/validator/v10"
+)
 
 type UserRequest struct {
-	FirstName string        `json:"first-name"`
-	LastName  string        `json:"last-name"`
-	Email     string        `json:"email"`
-	Password  string        `json:"password"`
-	Profile   model.Profile `json:"profile"`
+	FirstName string        `validate:"required" json:"first-name"`
+	LastName  string        `validate:"required" json:"last-name" `
+	Email     string        `validate:"required,email" json:"email" `
+	Password  string        `validate:"required,min=8" json:"password"`
+	Profile   model.Profile `validate:"" json:"profile"`
 }
 
-func (ur *UserRequest) ToUser() model.User {
+func (ur *UserRequest) Validate() (model.User, error) {
+	validate := validator.New()
+	err := validate.Struct(ur)
+
+	if err != nil {
+		return model.User{}, validationError(err)
+	}
+
 	return model.User{
 		FirstName: ur.FirstName,
 		LastName:  ur.LastName,
 		Email:     ur.Email,
 		Password:  ur.Password,
 		Profile:   ur.Profile,
-	}
+	}, nil
 }
