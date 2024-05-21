@@ -26,7 +26,6 @@ func GetInstance() Configurator {
 		configInstance = &Config{
 			vars: SetVars(),
 		}
-		println("config init success")
 	})
 	return configInstance
 }

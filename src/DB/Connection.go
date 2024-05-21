@@ -37,7 +37,6 @@ func GetInstance() Database {
 			log.Fatal(err)
 		}
 		dbInstance.SetDb(db)
-		println("connected to DB successfully")
 	})
 	return dbInstance
 }
