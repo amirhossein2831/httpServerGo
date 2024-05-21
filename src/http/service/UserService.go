@@ -37,12 +37,12 @@ func (s *UserService) Create(request request.UserRequest) (model.Mod, error) {
 	if err != nil {
 		return model.User{}, err
 	}
-	createdUser, err := s.repository.Create(user)
+	user, err = s.repository.Create(user)
 	if err != nil {
 		return model.User{}, err
 
 	}
-	return createdUser, err
+	return user, err
 }
 
 func (s *UserService) Update(request request.UserRequest, id string) (model.Mod, error) {
@@ -51,11 +51,11 @@ func (s *UserService) Update(request request.UserRequest, id string) (model.Mod,
 		return model.User{}, err
 	}
 
-	updatedUser, err := s.repository.Update(user, id)
+	user, err = s.repository.Update(user, id)
 	if err != nil {
 		return model.User{}, err
 	}
-	return updatedUser, nil
+	return user, nil
 }
 
 func (s *UserService) Delete(id string) error {
