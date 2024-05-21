@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/amirhossein2831/httpServerGo/src/Auth"
+	"github.com/amirhossein2831/httpServerGo/src/http/repositories"
 	"github.com/amirhossein2831/httpServerGo/src/http/request"
-	"github.com/amirhossein2831/httpServerGo/src/repositories"
+	"github.com/amirhossein2831/httpServerGo/src/model"
 	"github.com/amirhossein2831/httpServerGo/src/util"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
@@ -44,7 +45,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func authenticate(email string, password string) (bool, error) {
-	user, err := repositories.GetUserByEmail(email)
+	mod, err := repositories.NewUserRepository().GetByColumn("email", email)
+	user := mod.(model.User)
 	if err != nil {
 		return false, errors.New("can't find the user with given email")
 	}
