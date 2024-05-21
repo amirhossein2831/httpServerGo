@@ -6,9 +6,9 @@ import (
 )
 
 type Service interface {
-	Index() ([]model.User, error)
-	Show(string) (model.User, error)
-	Create(request.UserRequest) (model.User, error)
-	Update(request.UserRequest, string) (model.User, error)
+	Index() ([]model.Mod, error)
+	Show(string) (model.Mod, error)
+	Create(request.UserRequest) (model.Mod, error)
+	Update(request.UserRequest, string) (model.Mod, error)
 	Delete(string) error
 }
