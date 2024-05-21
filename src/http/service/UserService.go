@@ -1,40 +1,43 @@
 package service
 
 import (
+	"github.com/amirhossein2831/httpServerGo/src/http/repositories"
 	"github.com/amirhossein2831/httpServerGo/src/http/request"
 	"github.com/amirhossein2831/httpServerGo/src/model"
-	"github.com/amirhossein2831/httpServerGo/src/repositories"
 )
 
 type UserService struct {
+	repository repositories.Repository
 }
 
 func NewUserService() *UserService {
-	return &UserService{}
+	return &UserService{
+		repository: repositories.NewUserRepository(),
+	}
 }
 
-func (s *UserService) Get() ([]model.User, error) {
-	users, err := repositories.GetUsers()
+func (s *UserService) Index() ([]model.User, error) {
+	users, err := s.repository.All()
 	if err != nil {
 		return nil, err
 	}
 	return users, nil
 }
 
-func (s *UserService) GetEntity(id string) (model.User, error) {
-	users, err := repositories.GetUserById(id)
+func (s *UserService) Show(id string) (model.User, error) {
+	users, err := s.repository.Get(id)
 	if err != nil {
 		return model.User{}, err
 	}
 	return users, nil
 }
 
-func (s *UserService) Post(request request.UserRequest) (model.User, error) {
+func (s *UserService) Create(request request.UserRequest) (model.User, error) {
 	user, err := request.Validate()
 	if err != nil {
 		return model.User{}, err
 	}
-	user, err = repositories.CreateUser(user)
+	user, err = s.repository.Create(user)
 	if err != nil {
 		return model.User{}, err
 
@@ -42,13 +45,13 @@ func (s *UserService) Post(request request.UserRequest) (model.User, error) {
 	return user, err
 }
 
-func (s *UserService) Put(request request.UserRequest, id string) (model.User, error) {
+func (s *UserService) Update(request request.UserRequest, id string) (model.User, error) {
 	user, err := request.Validate()
 	if err != nil {
 		return model.User{}, err
 	}
 
-	user, err = repositories.UpdateUser(user, id)
+	user, err = s.repository.Update(user, id)
 	if err != nil {
 		return model.User{}, err
 	}
@@ -56,7 +59,7 @@ func (s *UserService) Put(request request.UserRequest, id string) (model.User, e
 }
 
 func (s *UserService) Delete(id string) error {
-	err := repositories.SoftDeleteUser(id)
+	err := s.repository.SoftDelete(id)
 	if err != nil {
 		return err
 	}
