@@ -8,7 +8,7 @@ import (
 type Service interface {
 	Index() ([]model.Mod, error)
 	Show(string) (model.Mod, error)
-	Create(request.UserRequest) (model.Mod, error)
-	Update(request.UserRequest, string) (model.Mod, error)
+	Create(request.Request) (model.Mod, error)
+	Update(request.Request, string) (model.Mod, error)
 	Delete(string) error
 }

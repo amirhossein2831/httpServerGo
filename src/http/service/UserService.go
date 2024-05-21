@@ -32,7 +32,7 @@ func (s *UserService) Show(id string) (model.Mod, error) {
 	return user, nil
 }
 
-func (s *UserService) Create(request request.UserRequest) (model.Mod, error) {
+func (s *UserService) Create(request request.Request) (model.Mod, error) {
 	user, err := request.Validate()
 	if err != nil {
 		return model.User{}, err
@@ -45,7 +45,7 @@ func (s *UserService) Create(request request.UserRequest) (model.Mod, error) {
 	return user, err
 }
 
-func (s *UserService) Update(request request.UserRequest, id string) (model.Mod, error) {
+func (s *UserService) Update(request request.Request, id string) (model.Mod, error) {
 	user, err := request.Validate()
 	if err != nil {
 		return model.User{}, err
