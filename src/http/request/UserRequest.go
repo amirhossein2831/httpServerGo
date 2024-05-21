@@ -6,11 +6,10 @@ import (
 )
 
 type UserRequest struct {
-	FirstName string        `validate:"required" json:"first-name"`
-	LastName  string        `validate:"required" json:"last-name" `
-	Email     string        `validate:"required,email" json:"email" `
-	Password  string        `validate:"required,min=8" json:"password"`
-	Profile   model.Profile `validate:"" json:"profile"`
+	FirstName string `validate:"required" json:"first-name"`
+	LastName  string `validate:"required" json:"last-name" `
+	Email     string `validate:"required,email" json:"email" `
+	Password  string `validate:"required,min=8" json:"password"`
 }
 
 func (ur *UserRequest) Validate() (model.User, error) {
@@ -26,6 +25,5 @@ func (ur *UserRequest) Validate() (model.User, error) {
 		LastName:  ur.LastName,
 		Email:     ur.Email,
 		Password:  ur.Password,
-		Profile:   ur.Profile,
 	}, nil
 }

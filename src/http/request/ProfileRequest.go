@@ -22,9 +22,9 @@ func (p *ProfileRequest) Validate() (model.Profile, error) {
 	}
 
 	return model.Profile{
-		Age: p.Age,
-		Address:  p.Address,
-		BirthData:     p.BirthData,
-		UserID:  p.UserID,
+		Age:       p.Age,
+		Address:   p.Address,
+		BirthData: p.BirthData,
+		UserID:    p.UserID,
 	}, nil
 }
