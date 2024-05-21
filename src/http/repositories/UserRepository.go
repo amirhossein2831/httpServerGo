@@ -14,7 +14,7 @@ func NewUserRepository() *UserRepository {
 	return &UserRepository{}
 }
 
-func (ur *UserRepository) All() ([]model.User, error) {
+func (ur *UserRepository) All() ([]model.Mod, error) {
 	var users []model.User
 
 	err := DB.GetInstance().GetDb().Preload("Profile").Find(&users).Error
@@ -22,10 +22,10 @@ func (ur *UserRepository) All() ([]model.User, error) {
 		return nil, err
 	}
 
-	return users, nil
+	return model.UserToMod(users), nil
 }
 
-func (ur *UserRepository) Get(id string) (model.User, error) {
+func (ur *UserRepository) Get(id string) (model.Mod, error) {
 	var user model.User
 
 	err := DB.GetInstance().GetDb().First(&user, id).Error
@@ -36,7 +36,7 @@ func (ur *UserRepository) Get(id string) (model.User, error) {
 	return user, nil
 }
 
-func (ur *UserRepository) GetByColumn(email string) (model.User, error) {
+func (ur *UserRepository) GetByColumn(email string) (model.Mod, error) {
 	var user model.User
 
 	err := DB.GetInstance().GetDb().Where("email = ?", email).First(&user).Error
@@ -47,7 +47,8 @@ func (ur *UserRepository) GetByColumn(email string) (model.User, error) {
 	return user, nil
 }
 
-func (ur *UserRepository) Create(user model.User) (model.User, error) {
+func (ur *UserRepository) Create(data model.Mod) (model.Mod, error) {
+	user := data.(model.User)
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return model.User{}, err
@@ -62,7 +63,8 @@ func (ur *UserRepository) Create(user model.User) (model.User, error) {
 	return user, nil
 }
 
-func (ur *UserRepository) Update(user model.User, id string) (model.User, error) {
+func (ur *UserRepository) Update(data model.Mod, id string) (model.Mod, error) {
+	user := data.(model.User)
 	err := ur.HardDelete(id)
 	if err != nil {
 		return model.User{}, err
