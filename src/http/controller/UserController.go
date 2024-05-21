@@ -10,8 +10,7 @@ import (
 )
 
 type UserController struct {
-	service *service.UserService
-	crud    Crud
+	service service.Service
 }
 
 func NewUserController() *UserController {
@@ -21,7 +20,7 @@ func NewUserController() *UserController {
 }
 
 func (c *UserController) Index(w http.ResponseWriter, r *http.Request) {
-	users, err := c.service.Get()
+	users, err := c.service.Index()
 	if err != nil {
 		util.JsonError(w, err)
 		return
@@ -30,7 +29,7 @@ func (c *UserController) Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *UserController) Show(w http.ResponseWriter, r *http.Request) {
-	user, err := c.service.GetEntity(mux.Vars(r)["id"])
+	user, err := c.service.Show(mux.Vars(r)["id"])
 	if err != nil {
 		util.JsonError(w, err)
 		return
@@ -46,7 +45,7 @@ func (c *UserController) Create(w http.ResponseWriter, r *http.Request) {
 		util.JsonError(w, err)
 		return
 	}
-	user, err := c.service.Post(userRequest)
+	user, err := c.service.Create(userRequest)
 	if err != nil {
 		util.JsonError(w, err)
 		return
@@ -63,7 +62,7 @@ func (c *UserController) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := c.service.Put(userRequest, mux.Vars(r)["id"])
+	user, err := c.service.Update(userRequest, mux.Vars(r)["id"])
 	if err != nil {
 		util.JsonError(w, err)
 		return
