@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"encoding/json"
+	"github.com/amirhossein2831/httpServerGo/src/http/request"
 	"github.com/amirhossein2831/httpServerGo/src/repositories"
 	"github.com/amirhossein2831/httpServerGo/src/util"
 	"github.com/gorilla/mux"
@@ -8,7 +10,7 @@ import (
 )
 
 type UserController struct {
-	Crud
+	crud Crud
 }
 
 func (c *UserController) Index(w http.ResponseWriter, r *http.Request) {
@@ -32,7 +34,20 @@ func (c *UserController) Show(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *UserController) Create(w http.ResponseWriter, r *http.Request) {
-	user, err := repositories.CreateUser(r)
+	var userRequest request.UserRequest
+	err := json.NewDecoder(r.Body).Decode(&userRequest)
+	if err != nil {
+		util.JsonError(w, err)
+		return
+	}
+
+	user, err := userRequest.Validate()
+	if err != nil {
+		util.JsonError(w, err)
+		return
+	}
+
+	user, err = repositories.CreateUser(user)
 	if err != nil {
 		util.JsonError(w, err)
 		return
@@ -41,7 +56,20 @@ func (c *UserController) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *UserController) Update(w http.ResponseWriter, r *http.Request) {
-	user, err := repositories.UpdateUser(r, mux.Vars(r)["id"])
+	var userRequest request.UserRequest
+	err := json.NewDecoder(r.Body).Decode(&userRequest)
+	if err != nil {
+		util.JsonError(w, err)
+		return
+	}
+
+	user, err := userRequest.Validate()
+	if err != nil {
+		util.JsonError(w, err)
+		return
+	}
+
+	user, err = repositories.UpdateUser(user, mux.Vars(r)["id"])
 	if err != nil {
 		util.JsonError(w, err)
 		return
@@ -50,7 +78,7 @@ func (c *UserController) Update(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *UserController) Delete(w http.ResponseWriter, r *http.Request) {
-	err := repositories.DeleteUser(mux.Vars(r)["id"])
+	err := repositories.HardDeleteUser(mux.Vars(r)["id"])
 	if err != nil {
 		util.JsonError(w, err)
 		return
