@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"encoding/json"
+	"github.com/amirhossein2831/httpServerGo/src/http/request"
 	"github.com/amirhossein2831/httpServerGo/src/repositories"
 	"github.com/amirhossein2831/httpServerGo/src/util"
 	"github.com/gorilla/mux"
@@ -32,7 +34,20 @@ func (c *MovieController) Show(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *MovieController) Create(w http.ResponseWriter, r *http.Request) {
-	movie, err := repositories.CreateMovie(r)
+	var movieRequest request.MovieRequest
+	err := json.NewDecoder(r.Body).Decode(&movieRequest)
+	if err != nil {
+		util.JsonError(w, err)
+		return
+	}
+
+	movie, err := movieRequest.Validate()
+	if err != nil {
+		util.JsonError(w, err)
+		return
+	}
+
+	movie, err = repositories.CreateMovie(movie)
 	if err != nil {
 		util.JsonError(w, err)
 		return
@@ -41,7 +56,20 @@ func (c *MovieController) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *MovieController) Update(w http.ResponseWriter, r *http.Request) {
-	movie, err := repositories.UpdateMovie(r, mux.Vars(r)["id"])
+	var movieRequest request.MovieRequest
+	err := json.NewDecoder(r.Body).Decode(&movieRequest)
+	if err != nil {
+		util.JsonError(w, err)
+		return
+	}
+
+	movie, err := movieRequest.Validate()
+	if err != nil {
+		util.JsonError(w, err)
+		return
+	}
+
+	movie, err = repositories.UpdateMovie(movie, mux.Vars(r)["id"])
 	if err != nil {
 		util.JsonError(w, err)
 		return
@@ -50,7 +78,7 @@ func (c *MovieController) Update(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *MovieController) Delete(w http.ResponseWriter, r *http.Request) {
-	err := repositories.DeleteMovie(mux.Vars(r)["id"])
+	err := repositories.SoftDeleteMovie(mux.Vars(r)["id"])
 	if err != nil {
 		util.JsonError(w, err)
 		return
