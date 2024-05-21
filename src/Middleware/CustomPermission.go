@@ -16,7 +16,22 @@ func CustomPermissionMiddleware(permissionMap map[string][]string) func(http.Han
 			if !exists {
 				next.ServeHTTP(w, r)
 			}
-			hasPermission := checkPermissions(r, permissions)
+
+			var user model.User
+			authHeader := r.Header.Get("Authorization")
+			tokenString := strings.Replace(authHeader, "Bearer ", "", 1)
+
+			claims, err := Auth.RetainClaim(tokenString)
+			if err != nil {
+				http.Error(w, "Forbidden", http.StatusForbidden)
+			}
+
+			err = DB.GetInstance().GetDb().Where("email = ?", claims["email"]).Preload("Roles").Preload("Roles.Permissions").First(&user).Error
+			if err != nil {
+				http.Error(w, "Forbidden", http.StatusForbidden)
+			}
+
+			hasPermission := model.HasPermission(user, permissions)
 			if hasPermission {
 				next.ServeHTTP(w, r)
 			} else {
@@ -24,33 +39,4 @@ func CustomPermissionMiddleware(permissionMap map[string][]string) func(http.Han
 			}
 		})
 	}
-}
-
-func checkPermissions(r *http.Request, permissions []string) bool {
-	var user model.User
-	authHeader := r.Header.Get("Authorization")
-	tokenString := strings.Replace(authHeader, "Bearer ", "", 1)
-
-	claims, err := Auth.RetainClaim(tokenString)
-	if err != nil {
-		return false
-
-	}
-
-	err = DB.GetInstance().GetDb().Where("email = ?", claims["email"]).Preload("Roles").Preload("Roles.Permissions").First(&user).Error
-	if err != nil {
-		return false
-	}
-
-	for _, role := range user.Roles {
-		for _, rolePermission := range role.Permissions {
-			for _, permission := range permissions {
-				if rolePermission.Name == permission {
-					return true
-				}
-			}
-		}
-	}
-
-	return false
 }
