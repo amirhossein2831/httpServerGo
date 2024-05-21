@@ -53,6 +53,6 @@ func (r *Router) Routing() {
 	// crud routes
 	CrudRoute(subRouter, "users", &controller.UserController{}, Middleware.AuthMiddleware, Middleware.RoleMiddleware([]string{"user"}))
 	CrudRoute(subRouter, "movies", &controller.MovieController{}, Middleware.AuthMiddleware, Middleware.RoleMiddleware([]string{"movie"}))
-	CrudRoute(subRouter, "books", &controller.BookController{}, Middleware.AuthMiddleware, Middleware.RoleMiddleware([]string{"movie"}))
+	CrudRoute(subRouter, "books", &controller.BookController{}, Middleware.AuthMiddleware, Middleware.RoleMiddleware([]string{"book"}))
 
 }
