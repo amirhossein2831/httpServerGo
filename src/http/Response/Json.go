@@ -2,13 +2,20 @@ package Response
 
 import (
 	"encoding/json"
+	"github.com/amirhossein2831/httpServerGo/src/Logger"
+	"go.uber.org/zap"
 	"net/http"
+	"time"
 )
 
 type JsonResponse interface {
+	GetStatusCode() int
+	GetSuccess() bool
+	GetData() interface{}
 	SetStatusCode(code int) JsonResponse
 	SetSuccess(isSuccess bool) JsonResponse
 	SetData(data interface{}) JsonResponse
+	Log() JsonResponse
 	Send(w http.ResponseWriter)
 }
 
@@ -26,6 +33,18 @@ func NewJson() JsonResponse {
 	}
 }
 
+func (j *Json) GetStatusCode() int {
+	return j.StatusCode
+}
+
+func (j *Json) GetSuccess() bool {
+	return j.IsSuccess
+}
+
+func (j *Json) GetData() interface{} {
+	return j.Data
+}
+
 func (j *Json) SetStatusCode(code int) JsonResponse {
 	j.StatusCode = code
 	return j
@@ -38,6 +57,24 @@ func (j *Json) SetSuccess(isSuccess bool) JsonResponse {
 
 func (j *Json) SetData(data interface{}) JsonResponse {
 	j.Data = data
+	return j
+}
+
+func (j *Json) Log() JsonResponse {
+	logger := Logger.GetInstance().GetLogger()
+	fields := []zap.Field{
+		zap.Int("StatusCode", j.StatusCode),
+		zap.Bool("IsSuccess", j.IsSuccess),
+		zap.Any("Data", j.Data),
+		zap.Time("Timestamp", time.Now()),
+	}
+
+	if j.IsSuccess {
+		logger.Info("Response sent", fields...)
+	} else {
+		logger.Error("Response sent with error", fields...)
+	}
+
 	return j
 }
 
