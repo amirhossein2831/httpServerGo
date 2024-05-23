@@ -62,17 +62,21 @@ func (j *Json) SetData(data interface{}) JsonResponse {
 
 func (j *Json) Log() JsonResponse {
 	logger := Logger.GetInstance().GetLogger()
-	fields := []zap.Field{
-		zap.Int("StatusCode", j.StatusCode),
-		zap.Bool("IsSuccess", j.IsSuccess),
-		zap.Any("Data", j.Data),
-		zap.Time("Timestamp", time.Now()),
-	}
 
 	if j.IsSuccess {
-		logger.Info("Response sent", fields...)
+		logger.Info("Response sent",
+			zap.Int("StatusCode", j.StatusCode),
+			zap.Bool("IsSuccess", j.IsSuccess),
+			zap.Any("Data", j.Data),
+			zap.Time("Timestamp", time.Now()),
+		)
 	} else {
-		logger.Error("Response sent with error", fields...)
+		logger.Error("Response sent with error",
+			zap.Int("StatusCode", j.StatusCode),
+			zap.Bool("IsSuccess", j.IsSuccess),
+			zap.Error(j.Data.(error)),
+			zap.Time("Timestamp", time.Now()),
+		)
 	}
 
 	return j
