@@ -4,10 +4,13 @@ import (
 	"errors"
 	"github.com/amirhossein2831/httpServerGo/src/DB/msq"
 	"github.com/amirhossein2831/httpServerGo/src/DB/pgs"
+	"github.com/amirhossein2831/httpServerGo/src/Logger"
 	"github.com/amirhossein2831/httpServerGo/src/config"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"log"
 	"sync"
+	"time"
 )
 
 var (
@@ -30,13 +33,24 @@ func GetInstance() Database {
 		case "mysql":
 			dbInstance = &msq.MysqlDB{}
 		default:
+			Logger.GetInstance().GetLogger().Error("Error in Db type ",
+				zap.Error(errors.New("unsupported db type")),
+				zap.Time("timestamp", time.Now()),
+			)
 			log.Fatal(errors.New("unsupported db type"))
 		}
 		db, err := dbInstance.Connect()
 		if err != nil {
+			Logger.GetInstance().GetLogger().Error("db connection error",
+				zap.Error(errors.New("unsupported db type")),
+				zap.Time("timestamp", time.Now()),
+			)
 			log.Fatal(err)
 		}
 		dbInstance.SetDb(db)
+		Logger.GetInstance().GetLogger().Info("connected to db successfully",
+			zap.Time("timestamp", time.Now()),
+		)
 	})
 	return dbInstance
 }
