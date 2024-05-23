@@ -25,6 +25,7 @@ func (c *BookController) Index(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Response.NewJson().
 			SetData(err).
+			Log().
 			Send(w)
 		return
 	}
@@ -33,6 +34,7 @@ func (c *BookController) Index(w http.ResponseWriter, r *http.Request) {
 		SetStatusCode(http.StatusOK).
 		SetSuccess(true).
 		SetData(books).
+		Log().
 		Send(w)
 }
 
@@ -41,6 +43,7 @@ func (c *BookController) Show(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Response.NewJson().
 			SetData(err).
+			Log().
 			Send(w)
 		return
 	}
@@ -49,6 +52,7 @@ func (c *BookController) Show(w http.ResponseWriter, r *http.Request) {
 		SetStatusCode(http.StatusOK).
 		SetSuccess(true).
 		SetData(book).
+		Log().
 		Send(w)
 }
 
@@ -58,6 +62,7 @@ func (c *BookController) Create(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Response.NewJson().
 			SetData(err).
+			Log().
 			Send(w)
 		return
 	}
@@ -66,6 +71,7 @@ func (c *BookController) Create(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Response.NewJson().
 			SetData(err).
+			Log().
 			Send(w)
 		return
 	}
@@ -74,6 +80,7 @@ func (c *BookController) Create(w http.ResponseWriter, r *http.Request) {
 		SetStatusCode(http.StatusOK).
 		SetSuccess(true).
 		SetData(book).
+		Log().
 		Send(w)
 }
 
@@ -83,6 +90,7 @@ func (c *BookController) Update(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Response.NewJson().
 			SetData(err).
+			Log().
 			Send(w)
 		return
 	}
@@ -91,6 +99,7 @@ func (c *BookController) Update(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Response.NewJson().
 			SetData(err).
+			Log().
 			Send(w)
 		return
 	}
@@ -99,6 +108,7 @@ func (c *BookController) Update(w http.ResponseWriter, r *http.Request) {
 		SetStatusCode(http.StatusOK).
 		SetSuccess(true).
 		SetData(book).
+		Log().
 		Send(w)
 }
 
@@ -107,6 +117,7 @@ func (c *BookController) Delete(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Response.NewJson().
 			SetData(err).
+			Log().
 			Send(w)
 		return
 	}
@@ -114,5 +125,6 @@ func (c *BookController) Delete(w http.ResponseWriter, r *http.Request) {
 		SetStatusCode(http.StatusOK).
 		SetSuccess(true).
 		SetData(struct{}{}).
+		Log().
 		Send(w)
 }

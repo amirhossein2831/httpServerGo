@@ -18,6 +18,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Response.NewJson().
 			SetData(err).
+			Log().
 			Send(w)
 		return
 	}
@@ -25,6 +26,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Response.NewJson().
 			SetData(err).
+			Log().
 			Send(w)
 		return
 	}
@@ -33,12 +35,14 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Response.NewJson().
 			SetData(err).
+			Log().
 			Send(w)
 		return
 	}
 	if !auth {
 		Response.NewJson().
 			SetData(errors.New("email or password is wrong")).
+			Log().
 			Send(w)
 		return
 	}
@@ -47,6 +51,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Response.NewJson().
 			SetData(errors.New("email or password is wrong")).
+			Log().
 			Send(w)
 		return
 	}
@@ -55,6 +60,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		SetStatusCode(http.StatusOK).
 		SetSuccess(true).
 		SetData(map[string]string{"token": token}).
+		Log().
 		Send(w)
 }
 

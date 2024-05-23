@@ -24,6 +24,7 @@ func (c *MovieController) Index(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Response.NewJson().
 			SetData(err).
+			Log().
 			Send(w)
 		return
 	}
@@ -32,6 +33,7 @@ func (c *MovieController) Index(w http.ResponseWriter, r *http.Request) {
 		SetStatusCode(http.StatusOK).
 		SetSuccess(true).
 		SetData(movies).
+		Log().
 		Send(w)
 }
 
@@ -40,6 +42,7 @@ func (c *MovieController) Show(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Response.NewJson().
 			SetData(err).
+			Log().
 			Send(w)
 		return
 	}
@@ -48,6 +51,7 @@ func (c *MovieController) Show(w http.ResponseWriter, r *http.Request) {
 		SetStatusCode(http.StatusOK).
 		SetSuccess(true).
 		SetData(movie).
+		Log().
 		Send(w)
 }
 
@@ -57,6 +61,7 @@ func (c *MovieController) Create(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Response.NewJson().
 			SetData(err).
+			Log().
 			Send(w)
 		return
 	}
@@ -65,6 +70,7 @@ func (c *MovieController) Create(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Response.NewJson().
 			SetData(err).
+			Log().
 			Send(w)
 		return
 	}
@@ -73,6 +79,7 @@ func (c *MovieController) Create(w http.ResponseWriter, r *http.Request) {
 		SetStatusCode(http.StatusOK).
 		SetSuccess(true).
 		SetData(movie).
+		Log().
 		Send(w)
 }
 
@@ -82,6 +89,7 @@ func (c *MovieController) Update(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Response.NewJson().
 			SetData(err).
+			Log().
 			Send(w)
 		return
 	}
@@ -90,6 +98,7 @@ func (c *MovieController) Update(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Response.NewJson().
 			SetData(err).
+			Log().
 			Send(w)
 		return
 	}
@@ -98,6 +107,7 @@ func (c *MovieController) Update(w http.ResponseWriter, r *http.Request) {
 		SetStatusCode(http.StatusOK).
 		SetSuccess(true).
 		SetData(movie).
+		Log().
 		Send(w)
 }
 
@@ -106,6 +116,7 @@ func (c *MovieController) Delete(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Response.NewJson().
 			SetData(err).
+			Log().
 			Send(w)
 		return
 	}
@@ -113,5 +124,6 @@ func (c *MovieController) Delete(w http.ResponseWriter, r *http.Request) {
 		SetStatusCode(http.StatusOK).
 		SetSuccess(true).
 		SetData(struct{}{}).
+		Log().
 		Send(w)
 }
