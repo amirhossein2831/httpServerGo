@@ -24,6 +24,7 @@ func (c *UserController) Index(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Response.NewJson().
 			SetData(err).
+			Log().
 			Send(w)
 		return
 	}
@@ -32,6 +33,7 @@ func (c *UserController) Index(w http.ResponseWriter, r *http.Request) {
 		SetStatusCode(http.StatusOK).
 		SetSuccess(true).
 		SetData(users).
+		Log().
 		Send(w)
 }
 
@@ -40,6 +42,7 @@ func (c *UserController) Show(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Response.NewJson().
 			SetData(err).
+			Log().
 			Send(w)
 		return
 	}
@@ -48,6 +51,7 @@ func (c *UserController) Show(w http.ResponseWriter, r *http.Request) {
 		SetStatusCode(http.StatusOK).
 		SetSuccess(true).
 		SetData(user).
+		Log().
 		Send(w)
 }
 
@@ -57,6 +61,7 @@ func (c *UserController) Create(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Response.NewJson().
 			SetData(err).
+			Log().
 			Send(w)
 		return
 	}
@@ -64,6 +69,7 @@ func (c *UserController) Create(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Response.NewJson().
 			SetData(err).
+			Log().
 			Send(w)
 		return
 	}
@@ -72,6 +78,7 @@ func (c *UserController) Create(w http.ResponseWriter, r *http.Request) {
 		SetStatusCode(http.StatusCreated).
 		SetSuccess(true).
 		SetData(user).
+		Log().
 		Send(w)
 }
 
@@ -81,6 +88,7 @@ func (c *UserController) Update(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Response.NewJson().
 			SetData(err).
+			Log().
 			Send(w)
 		return
 	}
@@ -89,6 +97,7 @@ func (c *UserController) Update(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Response.NewJson().
 			SetData(err).
+			Log().
 			Send(w)
 		return
 	}
@@ -97,6 +106,7 @@ func (c *UserController) Update(w http.ResponseWriter, r *http.Request) {
 		SetStatusCode(http.StatusOK).
 		SetSuccess(true).
 		SetData(user).
+		Log().
 		Send(w)
 }
 
@@ -105,6 +115,7 @@ func (c *UserController) Delete(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		Response.NewJson().
 			SetData(err).
+			Log().
 			Send(w)
 		return
 	}
@@ -112,5 +123,6 @@ func (c *UserController) Delete(w http.ResponseWriter, r *http.Request) {
 		SetStatusCode(http.StatusOK). // i don't know why but panic on 204 (no content)
 		SetSuccess(true).
 		SetData(struct{}{}).
+		Log().
 		Send(w)
 }
