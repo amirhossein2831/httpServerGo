@@ -34,15 +34,14 @@ func LogMiddleware(next http.Handler) http.Handler {
 
 		headerJSON, _ := json.Marshal(header)
 
-		request := model.Request{
+		DB.GetInstance().GetDb().Create(&model.Request{
 			Host:     host,
 			URL:      url,
 			Method:   method,
 			Protocol: pro,
-			Header:   json.RawMessage(headerJSON),
+			Header:   headerJSON,
 			Body:     bodyBytes,
-		}
-		DB.GetInstance().GetDb().Create(&request)
+		})
 
 		next.ServeHTTP(w, r)
 	})
