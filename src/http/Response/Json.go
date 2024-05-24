@@ -85,6 +85,9 @@ func (j *Json) Log() JsonResponse {
 func (j *Json) Send(w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(j.StatusCode)
+	if !j.IsSuccess {
+		j.Data = j.Data.(error).Error()
+	}
 	err := json.NewEncoder(w).Encode(j)
 	if err != nil {
 		NewJson().SetSuccess(false).SetStatusCode(http.StatusBadRequest).SetData(err).Send(w)
