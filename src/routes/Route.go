@@ -48,6 +48,7 @@ func GetInstance() Route {
 
 func (r *Router) Routing() {
 	subRouter := r.r.PathPrefix("/api/v1/").Subrouter()
+	subRouter.Use(Middleware.LogMiddleware)
 
 	// static file
 	r.r.Handle("/", http.FileServer(http.Dir("static/html")))
