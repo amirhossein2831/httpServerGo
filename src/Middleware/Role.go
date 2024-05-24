@@ -1,8 +1,10 @@
 package Middleware
 
 import (
+	"errors"
 	"github.com/amirhossein2831/httpServerGo/src/Auth"
 	"github.com/amirhossein2831/httpServerGo/src/DB"
+	"github.com/amirhossein2831/httpServerGo/src/http/Response"
 	"github.com/amirhossein2831/httpServerGo/src/model"
 	"net/http"
 	"strings"
@@ -18,20 +20,35 @@ func RoleMiddleware(roles []string) func(http.Handler) http.Handler {
 
 			claims, err := Auth.RetainClaim(tokenString)
 			if err != nil {
-				http.Error(w, "Forbidden", http.StatusForbidden)
+				Response.NewJson().
+					SetSuccess(false).
+					SetStatusCode(http.StatusForbidden).
+					SetData(errors.New("forbidden")).
+					Log().Send(w)
+				return
 			}
 
 			err = DB.GetInstance().GetDb().Where("email = ?", claims["email"]).Preload("Roles").Preload("Roles.Permissions").First(&user).Error
 			if err != nil {
-				http.Error(w, "Forbidden", http.StatusForbidden)
+				Response.NewJson().
+					SetSuccess(false).
+					SetStatusCode(http.StatusForbidden).
+					SetData(errors.New("forbidden")).
+					Log().Send(w)
+				return
 			}
 
 			hasRole := model.HasRole(user, roles)
-			if hasRole {
-				next.ServeHTTP(w, r)
-			} else {
-				http.Error(w, "Forbidden", http.StatusForbidden)
+			if !hasRole {
+				Response.NewJson().
+					SetSuccess(false).
+					SetStatusCode(http.StatusForbidden).
+					SetData(errors.New("forbidden")).
+					Log().Send(w)
+				return
 			}
+
+			next.ServeHTTP(w, r)
 		})
 	}
 }
