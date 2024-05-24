@@ -47,8 +47,11 @@ func GetInstance() Route {
 }
 
 func (r *Router) Routing() {
+	// log all incoming request
+	r.r.Use(Middleware.LogMiddleware)
+
+	// create api/v1 route group
 	subRouter := r.r.PathPrefix("/api/v1/").Subrouter()
-	subRouter.Use(Middleware.LogMiddleware)
 
 	// static file
 	r.r.Handle("/", http.FileServer(http.Dir("static/html")))
