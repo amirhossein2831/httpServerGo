@@ -2,4 +2,4 @@
 .env
 vendor/
 data
-log.json
+logs
