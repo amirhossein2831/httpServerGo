@@ -1,11 +1,14 @@
 package routes
 
 import (
+	"github.com/amirhossein2831/httpServerGo/src/Logger"
 	"github.com/amirhossein2831/httpServerGo/src/Middleware"
 	"github.com/amirhossein2831/httpServerGo/src/http/controller"
 	"github.com/gorilla/mux"
+	"go.uber.org/zap"
 	"net/http"
 	"sync"
+	"time"
 )
 
 // see the api documentation in https://documenter.getpostman.com/view/29634924/2sA3JT1dNa
@@ -36,6 +39,9 @@ func GetInstance() Route {
 	once.Do(func() {
 		routerInstance = &Router{r: mux.NewRouter()}
 		routerInstance.Routing()
+		Logger.GetInstance().GetLogger().Info("router instantiate successfully",
+			zap.Time("timestamp", time.Now()),
+		)
 	})
 	return routerInstance
 }

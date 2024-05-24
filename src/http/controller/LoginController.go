@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/amirhossein2831/httpServerGo/src/Auth"
+	"github.com/amirhossein2831/httpServerGo/src/http/Response"
 	"github.com/amirhossein2831/httpServerGo/src/http/repositories"
 	"github.com/amirhossein2831/httpServerGo/src/http/request"
 	"github.com/amirhossein2831/httpServerGo/src/model"
-	"github.com/amirhossein2831/httpServerGo/src/util"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 )
@@ -16,32 +16,52 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	var credentials request.CredRequest
 	err := json.NewDecoder(r.Body).Decode(&credentials)
 	if err != nil {
-		util.JsonError(w, err)
+		Response.NewJson().
+			SetData(err).
+			Log().
+			Send(w)
 		return
 	}
 	credentials, err = credentials.Validate()
 	if err != nil {
-		util.JsonError(w, err)
+		Response.NewJson().
+			SetData(err).
+			Log().
+			Send(w)
 		return
 	}
 
 	auth, err := authenticate(credentials.Email, credentials.Password)
 	if err != nil {
-		util.JsonError(w, err)
+		Response.NewJson().
+			SetData(err).
+			Log().
+			Send(w)
 		return
 	}
 	if !auth {
-		util.JsonError(w, errors.New("email or password is wrong"))
+		Response.NewJson().
+			SetData(errors.New("email or password is wrong")).
+			Log().
+			Send(w)
 		return
 	}
 
 	token, err := Auth.CreateToken(credentials.Email)
 	if err != nil {
-		util.JsonError(w, errors.New("email or password is wrong"))
+		Response.NewJson().
+			SetData(errors.New("email or password is wrong")).
+			Log().
+			Send(w)
 		return
 	}
 
-	util.JsonResponse(w, http.StatusOK, map[string]string{"token": token})
+	Response.NewJson().
+		SetStatusCode(http.StatusOK).
+		SetSuccess(true).
+		SetData(map[string]string{"token": token}).
+		Log().
+		Send(w)
 }
 
 func authenticate(email string, password string) (bool, error) {

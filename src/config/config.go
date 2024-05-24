@@ -1,9 +1,12 @@
 package config
 
 import (
+	"github.com/amirhossein2831/httpServerGo/src/Logger"
 	"github.com/joho/godotenv"
+	"go.uber.org/zap"
 	"log"
 	"sync"
+	"time"
 )
 
 var (
@@ -26,6 +29,9 @@ func GetInstance() Configurator {
 		configInstance = &Config{
 			vars: SetVars(),
 		}
+		Logger.GetInstance().GetLogger().Info("the setting is configured",
+			zap.Time("timestamp", time.Now()),
+		)
 	})
 	return configInstance
 }
@@ -33,6 +39,10 @@ func GetInstance() Configurator {
 func SetVars() map[string]string {
 	vars, err := godotenv.Read()
 	if err != nil {
+		Logger.GetInstance().GetLogger().Error("Error loading .env file: ",
+			zap.Error(err),
+			zap.Time("timestamp", time.Now()),
+		)
 		log.Fatalf("Error loading .env file: %v", err)
 	}
 	return vars
