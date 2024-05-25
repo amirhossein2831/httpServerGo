@@ -3,11 +3,13 @@ version: '3.9'
 services:
   app:
     build: .
-    container_name: http-server
+    container_name: app
     restart: on-failure
-    network_mode: "host"
+    ports:
+      - "8080:8080"
     volumes:
       - .:/app
+      - ./logs:/logs/
 
   mysql:
     image: mysql:latest
@@ -33,8 +35,10 @@ services:
       POSTGRES_PASSWORD: "password"
       POSTGRES_DB: "BookManagement"
     volumes:
-      - local_pgdata:/var/lib/postgresql/data'
-
+      - pg-data:/var/lib/postgresql/data'
 volumes:
   data:
-  local_pgdata:
+    driver: local
+  pg-data:
+    driver: local
+
