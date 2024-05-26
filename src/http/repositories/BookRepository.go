@@ -34,7 +34,7 @@ func (ur *BookRepository) Get(id string) (model.Mod, error) {
 
 	return book, nil
 }
-func (ur *BookRepository) GetByColumn(column, value string) (model.Mod, error) {
+func (ur *BookRepository) GetByColumn(column string, value interface{}, relations []string) (model.Mod, error) {
 	return nil, nil
 }
 

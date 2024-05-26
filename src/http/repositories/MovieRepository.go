@@ -35,7 +35,7 @@ func (ur *MovieRepository) Get(id string) (model.Mod, error) {
 	return movie, nil
 }
 
-func (ur *MovieRepository) GetByColumn(column, email string) (model.Mod, error) {
+func (ur *MovieRepository) GetByColumn(column string, value interface{}, relations []string) (model.Mod, error) {
 	return nil, nil
 }
 

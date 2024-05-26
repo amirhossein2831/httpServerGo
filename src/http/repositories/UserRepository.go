@@ -36,10 +36,14 @@ func (ur *UserRepository) Get(id string) (model.Mod, error) {
 	return user, nil
 }
 
-func (ur *UserRepository) GetByColumn(column, value string) (model.Mod, error) {
+func (ur *UserRepository) GetByColumn(column string, value interface{}, relations []string) (model.Mod, error) {
 	var user model.User
+	res := DB.GetInstance().GetDb().Where(column+" = ?", value)
+	for _, relation := range relations {
+		res = res.Preload(relation)
+	}
 
-	err := DB.GetInstance().GetDb().Where(column+" = ?", value).First(&user).Error
+	err := res.First(&user).Error
 	if err != nil {
 		return model.User{}, err
 	}
