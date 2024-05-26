@@ -3,7 +3,7 @@ version: '3.9'
 services:
   app:
     build: .
-    container_name: http-server
+    container_name: app
     restart: on-failure
     network_mode: "host"
     volumes:
@@ -11,7 +11,7 @@ services:
 
   mysql:
     image: mysql:latest
-    container_name: http-server-my
+    container_name: mysql
     restart: on-failure
     ports:
       - "3306:3306"
@@ -24,7 +24,7 @@ services:
 
   db:
     image: postgres:latest
-    container_name: http-server-pgs
+    container_name: postgres
     restart: on-failure
     ports:
       - "5433:5432"
@@ -33,8 +33,42 @@ services:
       POSTGRES_PASSWORD: "password"
       POSTGRES_DB: "BookManagement"
     volumes:
-      - local_pgdata:/var/lib/postgresql/data'
+      - pg-data:/var/lib/postgresql/data'
+#
+#  elasticsearch:
+#    container_name: elastic
+#    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
+#    ports:
+#      - "9200:9200"
+#    environment:
+#      - discovery.type=single-node
+#
+#  kibana:
+#    container_name: kibana
+#    image: docker.elastic.co/kibana/kibana:7.15.0
+#    ports:
+#      - "5601:5601"
+#    depends_on:
+#      - elasticsearch
+#    environment:
+#      ELASTIC_HOST: "http://elasticsearch:9200"
+#
+#
+#  filebeat:
+#    build:
+#      context: ./filebeat
+#    container_name: filebeat
+#    command: filebeat -e -strict.perms=false
+#    volumes:
+#      - ./logs:/logs/
+#      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+#    depends_on:
+#      - elasticsearch
+#      - kibana
 
 volumes:
   data:
-  local_pgdata:
+    driver: local
+  pg-data:
+    driver: local
+

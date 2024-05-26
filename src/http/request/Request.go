@@ -14,8 +14,11 @@ func validationError(err error) error {
 	var validationErrors validator.ValidationErrors
 	errors.As(err, &validationErrors)
 	valError := ""
-	for _, err := range validationErrors {
-		valError += err.Field() + ": this field has error: " + err.Tag() + " " + err.Param() + " | "
+	for i, err := range validationErrors {
+		if i != 0 {
+			valError += "|"
+		}
+		valError += err.Field() + ": this field has error: " + err.Tag() + " " + err.Param()
 	}
 	return errors.New(valError)
 }

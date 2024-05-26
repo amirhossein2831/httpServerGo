@@ -2,7 +2,9 @@ package Response
 
 import (
 	"encoding/json"
+	"github.com/amirhossein2831/httpServerGo/src/DB"
 	"github.com/amirhossein2831/httpServerGo/src/Logger"
+	"github.com/amirhossein2831/httpServerGo/src/model"
 	"go.uber.org/zap"
 	"net/http"
 	"time"
@@ -63,6 +65,7 @@ func (j *Json) SetData(data interface{}) JsonResponse {
 func (j *Json) Log() JsonResponse {
 	logger := Logger.GetInstance().GetLogger()
 
+	// Log the Response
 	if j.IsSuccess {
 		logger.Info("Response sent",
 			zap.Int("StatusCode", j.StatusCode),
@@ -79,12 +82,23 @@ func (j *Json) Log() JsonResponse {
 		)
 	}
 
+	// save the Response in DB
+	data, _ := json.Marshal(j.Data)
+	DB.GetInstance().GetDb().Create(&model.Response{
+		Status:    j.StatusCode,
+		IsSuccess: j.IsSuccess,
+		Data:      data,
+	})
+
 	return j
 }
 
 func (j *Json) Send(w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(j.StatusCode)
+	if !j.IsSuccess {
+		j.Data = j.Data.(error).Error()
+	}
 	err := json.NewEncoder(w).Encode(j)
 	if err != nil {
 		NewJson().SetSuccess(false).SetStatusCode(http.StatusBadRequest).SetData(err).Send(w)
