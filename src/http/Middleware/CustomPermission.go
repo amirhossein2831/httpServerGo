@@ -3,14 +3,14 @@ package Middleware
 import (
 	"errors"
 	"github.com/amirhossein2831/httpServerGo/src/Auth"
-	"github.com/amirhossein2831/httpServerGo/src/DB"
 	"github.com/amirhossein2831/httpServerGo/src/http/Response"
+	"github.com/amirhossein2831/httpServerGo/src/http/repositories"
 	"github.com/amirhossein2831/httpServerGo/src/model"
 	"net/http"
 	"strings"
 )
 
-func CustomPermissionMiddleware(permissionMap map[string][]string) func(http.Handler) http.Handler {
+func CustomPermission(permissionMap map[string][]string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			method := r.Method
@@ -19,6 +19,7 @@ func CustomPermissionMiddleware(permissionMap map[string][]string) func(http.Han
 				next.ServeHTTP(w, r)
 			}
 
+			userRepo := repositories.UserRepository{}
 			var user model.User
 			authHeader := r.Header.Get("Authorization")
 			tokenString := strings.Replace(authHeader, "Bearer ", "", 1)
@@ -32,8 +33,8 @@ func CustomPermissionMiddleware(permissionMap map[string][]string) func(http.Han
 					Log().Send(w)
 				return
 			}
-
-			err = DB.GetInstance().GetDb().Where("email = ?", claims["email"]).Preload("Roles").Preload("Roles.Permissions").First(&user).Error
+			res, err := userRepo.GetByColumn("email", claims["email"], []string{"Roles", "Roles.Permissions"})
+			user = res.(model.User)
 			if err != nil {
 				Response.NewJson().
 					SetSuccess(false).

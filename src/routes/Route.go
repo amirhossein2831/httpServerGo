@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/amirhossein2831/httpServerGo/src/Logger"
-	Middleware2 "github.com/amirhossein2831/httpServerGo/src/http/Middleware"
+	"github.com/amirhossein2831/httpServerGo/src/http/Middleware"
 	"github.com/amirhossein2831/httpServerGo/src/http/controller"
 	"github.com/gorilla/mux"
 	"go.uber.org/zap"
@@ -48,7 +48,7 @@ func GetInstance() Route {
 
 func (r *Router) Routing() {
 	// log all incoming request
-	r.r.Use(Middleware2.LogMiddleware)
+	r.r.Use(Middleware.Log)
 
 	// create api/v1 route group
 	subRouter := r.r.PathPrefix("/api/v1/").Subrouter()
@@ -61,7 +61,7 @@ func (r *Router) Routing() {
 	Post(subRouter, "/users/login/", controller.Login)
 
 	// crud routes
-	CrudRoute(subRouter, "users", controller.NewUserController(), Middleware2.AuthMiddleware, Middleware2.RoleMiddleware([]string{"user"}))
-	CrudRoute(subRouter, "movies", controller.NewMovieController(), Middleware2.AuthMiddleware, Middleware2.RoleMiddleware([]string{"movie"}))
-	CrudRoute(subRouter, "books", controller.NewBookController(), Middleware2.AuthMiddleware, Middleware2.RoleMiddleware([]string{"book"}))
+	CrudRoute(subRouter, "users", controller.NewUserController(), Middleware.Authenticate, Middleware.Role([]string{"user"}))
+	CrudRoute(subRouter, "movies", controller.NewMovieController(), Middleware.Authenticate, Middleware.Role([]string{"movie"}))
+	CrudRoute(subRouter, "books", controller.NewBookController(), Middleware.Authenticate, Middleware.Role([]string{"book"}))
 }

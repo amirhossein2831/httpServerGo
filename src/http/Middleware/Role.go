@@ -3,16 +3,17 @@ package Middleware
 import (
 	"errors"
 	"github.com/amirhossein2831/httpServerGo/src/Auth"
-	"github.com/amirhossein2831/httpServerGo/src/DB"
 	"github.com/amirhossein2831/httpServerGo/src/http/Response"
+	"github.com/amirhossein2831/httpServerGo/src/http/repositories"
 	"github.com/amirhossein2831/httpServerGo/src/model"
 	"net/http"
 	"strings"
 )
 
-func RoleMiddleware(roles []string) func(http.Handler) http.Handler {
+func Role(roles []string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			userRepo := repositories.NewUserRepository()
 			var user model.User
 
 			authHeader := r.Header.Get("Authorization")
@@ -27,8 +28,8 @@ func RoleMiddleware(roles []string) func(http.Handler) http.Handler {
 					Log().Send(w)
 				return
 			}
-
-			err = DB.GetInstance().GetDb().Where("email = ?", claims["email"]).Preload("Roles").Preload("Roles.Permissions").First(&user).Error
+			res, err := userRepo.GetByColumn("email", claims["email"], []string{"Roles", "Roles.Permissions"})
+			user = res.(model.User)
 			if err != nil {
 				Response.NewJson().
 					SetSuccess(false).

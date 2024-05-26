@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-func LogMiddleware(next http.Handler) http.Handler {
+func Log(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		host := r.Host
 		url := r.RequestURI
