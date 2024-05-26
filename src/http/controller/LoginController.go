@@ -65,7 +65,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func authenticate(email string, password string) (bool, error) {
-	mod, err := repositories.NewUserRepository().GetByColumn("email", email)
+	mod, err := repositories.NewUserRepository().GetByColumn("email", email, []string{})
 	user := mod.(model.User)
 	if err != nil {
 		return false, errors.New("can't find the user with given email")
