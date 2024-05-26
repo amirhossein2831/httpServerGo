@@ -9,7 +9,6 @@ services:
       - "8080:8080"
     volumes:
       - .:/app
-      - ./logs:/logs/
 
   mysql:
     image: mysql:latest
@@ -36,6 +35,38 @@ services:
       POSTGRES_DB: "BookManagement"
     volumes:
       - pg-data:/var/lib/postgresql/data'
+
+  elasticsearch:
+    container_name: elastic
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
+    ports:
+      - "9200:9200"
+    environment:
+      - discovery.type=single-node
+
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:7.15.0
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    environment:
+      ELASTIC_HOST: "http://elasticsearch:9200"
+
+
+  filebeat:
+    build:
+      context: ./filebeat
+    container_name: filebeat
+    command: filebeat -e -strict.perms=false
+    volumes:
+      - ./logs:/logs/
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+    depends_on:
+      - elasticsearch
+      - kibana
+
 volumes:
   data:
     driver: local
