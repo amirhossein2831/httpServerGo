@@ -36,7 +36,7 @@ services:
     container_name: postgres
     restart: on-failure
     ports:
-      - "5433:5432"
+      - "5432:5432"
     environment:
       POSTGRES_USER: "root"
       POSTGRES_PASSWORD: "password"
