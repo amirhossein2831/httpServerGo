@@ -14,9 +14,11 @@ func CustomPermission(permissionMap map[string][]string) func(http.Handler) http
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			method := r.Method
+
 			permissions, exists := permissionMap[method]
 			if !exists {
 				next.ServeHTTP(w, r)
+				return
 			}
 
 			userRepo := repositories.UserRepository{}

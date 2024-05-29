@@ -61,7 +61,11 @@ func (r *Router) Routing() {
 	Post(subRouter, "/users/login/", controller.Login)
 
 	// crud routes
-	CrudRoute(subRouter, "users", controller.NewUserController(), Middleware.Authenticate, Middleware.Role([]string{"user"}))
+	CrudRoute(subRouter, "users", controller.NewUserController(), Middleware.CustomPermission(map[string][]string{
+		"GET":    {"read-user"},
+		"PUT":    {"update-user"},
+		"DELETE": {"delete-user"},
+	}))
 	CrudRoute(subRouter, "movies", controller.NewMovieController(), Middleware.Authenticate, Middleware.Role([]string{"movie"}))
 	CrudRoute(subRouter, "books", controller.NewBookController(), Middleware.Authenticate, Middleware.Role([]string{"book"}))
 }
