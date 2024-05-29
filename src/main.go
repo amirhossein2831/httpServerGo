@@ -16,7 +16,9 @@ import (
 func main() {
 	// Init the app
 	App.Configure()
-	defer Logger.GetInstance().GetLogger().Sync()
+
+	// defer the config
+	defer App.DeferConfig()
 
 	// Migrate Tables
 	err := model.Migrate(DB.GetInstance().GetDb())

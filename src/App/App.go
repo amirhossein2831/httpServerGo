@@ -6,6 +6,8 @@ import (
 	"github.com/amirhossein2831/httpServerGo/src/config"
 	"github.com/amirhossein2831/httpServerGo/src/rabbit"
 	"github.com/amirhossein2831/httpServerGo/src/routes"
+	"go.uber.org/zap"
+	"time"
 )
 
 var application APP
@@ -83,4 +85,17 @@ func (app *App) GetConnection() rabbit.Connection {
 
 func (app *App) SetConnection(conn rabbit.Connection) {
 	app.rbConn = conn
+}
+
+func DeferConfig() {
+	defer func() {
+		err := application.Logger().GetLogger().Sync()
+		if err != nil {
+			application.Logger().GetLogger().Error("cannot close the logger", zap.Error(err), zap.Time("timestamp", time.Now()))
+		}
+		err = application.GetConnection().GetConnection().Close()
+		if err != nil {
+			application.Logger().GetLogger().Error("cannot close the rabbit connection", zap.Error(err), zap.Time("timestamp", time.Now()))
+		}
+	}()
 }
