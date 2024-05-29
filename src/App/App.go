@@ -4,6 +4,7 @@ import (
 	"github.com/amirhossein2831/httpServerGo/src/DB"
 	"github.com/amirhossein2831/httpServerGo/src/Logger"
 	"github.com/amirhossein2831/httpServerGo/src/config"
+	"github.com/amirhossein2831/httpServerGo/src/rabbit"
 	"github.com/amirhossein2831/httpServerGo/src/routes"
 )
 
@@ -18,6 +19,8 @@ type APP interface {
 	SetConfig(config.Configurator)
 	Logger() Logger.Logger
 	SetLogger(logger Logger.Logger)
+	GetConnection() rabbit.Connection
+	SetConnection(conn rabbit.Connection)
 }
 
 type App struct {
@@ -25,6 +28,7 @@ type App struct {
 	db     DB.Database
 	router routes.Route
 	config config.Configurator
+	rbConn rabbit.Connection
 }
 
 func Configure() {
@@ -33,6 +37,7 @@ func Configure() {
 		config: config.GetInstance(),
 		db:     DB.GetInstance(),
 		router: routes.GetInstance(),
+		rbConn: rabbit.GetInstance(),
 	}
 }
 
@@ -70,4 +75,12 @@ func (app *App) Logger() Logger.Logger {
 
 func (app *App) SetLogger(logger Logger.Logger) {
 	app.logger = logger
+}
+
+func (app *App) GetConnection() rabbit.Connection {
+	return app.rbConn
+}
+
+func (app *App) SetConnection(conn rabbit.Connection) {
+	app.rbConn = conn
 }
