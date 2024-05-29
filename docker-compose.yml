@@ -58,6 +58,9 @@ services:
     volumes:
       - ./rabbit-data/data:/var/lib/rabbitmq/
       - ./rabbit-data/log:/var/log/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: "root"
+      RABBITMQ_DEFAULT_PASS: "password"
     healthcheck:
       test: [ "CMD", "sh", "-c", "rabbitmqctl status && curl -f http://localhost:15672 > /dev/null 2>&1" ]
       interval: 30s
