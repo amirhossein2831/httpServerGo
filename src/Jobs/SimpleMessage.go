@@ -57,10 +57,12 @@ func (it *SimpleMessage) Consume() {
 	var forever chan struct{}
 	go func() {
 		for d := range message {
+			Logger.GetInstance().GetLogger().Info("Received a message", zap.String("queue", q.Name), zap.Any("data", d.Body), zap.Time("timestamp", time.Now()))
 			log.Printf("Received a message from %v Queue: %v", q.Name, d.Body)
 		}
 	}()
 
+	Logger.GetInstance().GetLogger().Info("Waiting for Publisher", zap.String("queue", q.Name), zap.Time("timestamp", time.Now()))
 	log.Printf(" [****] Waiting for messages form %v queue. To exit press CTRL+C", q.Name)
 	<-forever
 }
