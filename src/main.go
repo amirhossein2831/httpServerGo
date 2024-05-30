@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/amirhossein2831/httpServerGo/src/App"
 	"github.com/amirhossein2831/httpServerGo/src/DB"
+	"github.com/amirhossein2831/httpServerGo/src/Jobs"
 	"github.com/amirhossein2831/httpServerGo/src/Logger"
 	"github.com/amirhossein2831/httpServerGo/src/config"
 	"github.com/amirhossein2831/httpServerGo/src/model"
@@ -16,6 +17,9 @@ import (
 func main() {
 	// Init the app
 	App.Configure()
+
+	sm := Jobs.NewSimpleMessageJob()
+	sm.Publish()
 
 	// defer the config
 	defer App.DeferConfig()

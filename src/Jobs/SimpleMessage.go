@@ -58,7 +58,7 @@ func (it *SimpleMessage) Consume() {
 	go func() {
 		for d := range message {
 			Logger.GetInstance().GetLogger().Info("Received a message", zap.String("queue", q.Name), zap.Any("data", d.Body), zap.Time("timestamp", time.Now()))
-			log.Printf("Received a message from %v Queue: %v", q.Name, d.Body)
+			log.Printf("Received a message from %s Queue: %s", q.Name, d.Body)
 		}
 	}()
 
