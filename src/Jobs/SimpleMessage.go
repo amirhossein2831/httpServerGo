@@ -42,7 +42,7 @@ func (it *SimpleMessage) Publish() {
 
 func (it *SimpleMessage) Consume() {
 	ch, q, err := channelWithDefaultQueue("simpleMessage")
-	//defer ch.Close()
+	defer ch.Close()
 	if err != nil {
 		Logger.GetInstance().GetLogger().Error("Failed to open rabbit channel or queue", zap.Error(err), zap.Time("timestamp", time.Now()))
 		return
@@ -57,10 +57,10 @@ func (it *SimpleMessage) Consume() {
 	var forever chan struct{}
 	go func() {
 		for d := range message {
-			log.Printf("Received a message: %s", d.Body)
+			log.Printf("Received a message from %v Queue: %v", q.Name, d.Body)
 		}
 	}()
 
-	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
+	log.Printf(" [****] Waiting for messages form %v queue. To exit press CTRL+C", q.Name)
 	<-forever
 }
