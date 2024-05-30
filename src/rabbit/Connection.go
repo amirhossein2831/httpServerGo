@@ -40,6 +40,15 @@ func GetInstance() Connection {
 	return conInstance
 }
 
+func GetChannel() (*amqp.Channel, error) {
+	conn := GetInstance()
+	ch, err := conn.GetConnection().Channel()
+	if err != nil {
+		return nil, err
+	}
+	return ch, nil
+}
+
 func (c *RbConnection) GetConnection() *amqp.Connection {
 	return c.conn
 }
