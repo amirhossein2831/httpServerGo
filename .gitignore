@@ -4,3 +4,4 @@ vendor/
 data
 logs
 rabbit-data
+docker-conf
